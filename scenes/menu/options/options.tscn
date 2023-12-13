@@ -30,10 +30,18 @@ layout_mode = 2
 
 [node name="Volume" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+focus_neighbor_left = NodePath("../Back")
+focus_neighbor_top = NodePath("../Back")
+focus_neighbor_right = NodePath("../Back")
+focus_neighbor_bottom = NodePath("../Back")
 text = "Volume"
 
 [node name="Back" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+focus_neighbor_left = NodePath("../Volume")
+focus_neighbor_top = NodePath("../Volume")
+focus_neighbor_right = NodePath("../Volume")
+focus_neighbor_bottom = NodePath("../Volume")
 text = "Back"
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Volume" to="." method="_on_volume_pressed"]
