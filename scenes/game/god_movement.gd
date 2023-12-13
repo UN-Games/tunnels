@@ -1,6 +1,6 @@
 extends Node3D
 
-@onready var camera: Camera3D = %Camera3D
+@onready var camera: Camera3D = %Elevation/Camera3D
 @onready var viewport_width: int = get_viewport().get_size().x
 @onready var viewport_height: int = get_viewport().get_size().y
 @onready var viewport_min_x_move: int = viewport_width
@@ -8,6 +8,8 @@ extends Node3D
 # export the pan speed with a slider from 0 to 10 by 0.5 increments
 @export_range(0, 10, 0.5) var pan_speed: float = 2.0
 @export var allow_pan: bool = true
+# movement
+@export_range(0, 100, 10) var move_speed: float = 10.0
 # zoom
 @export_range(0, 1000) var min_zoom: int = 1
 @export_range(0, 1000) var max_zoom: int = 90
@@ -27,6 +29,7 @@ var _zooming_in: bool = false
 var _zooming_out: bool = false
 var _is_panning: bool = false
 var _zoom_direction: float = 0
+var _is_frozen: bool = false
 
 
 const GROUND_PLANE = Plane(Vector3.UP, 0)
@@ -34,13 +37,16 @@ const RAY_LENGTH = 1000
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
-
+	Events.connect("camera_freeze_requested", _freeze)
+	Events.connect("camera_unfreeze_requested", _unfreeze)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	if _is_frozen:
+		return
+	_move(delta)
 	_zoom(delta)
-	# _pan(delta)
+	_pan(delta)
 	# debug position
 	#position.x = move_toward(position.x, viewportMousePos.x, viewport_min_x_move * 1)
 	# move the camera in negative local z
@@ -92,8 +98,25 @@ func _input(event):
 	if event.is_action_released("camera_zoom_out"):
 		_last_zoomed_out_pos = get_viewport().get_mouse_position()
 
+func _move(delta: float) -> void:
+	var velocity = Vector3()
+	if Input.is_action_pressed("up"):
+		velocity -= transform.basis.z
+	if Input.is_action_pressed("down"):
+		velocity += transform.basis.z
+	if Input.is_action_pressed("left"):
+		velocity -= transform.basis.x
+	if Input.is_action_pressed("right"):
+		velocity += transform.basis.x
+	velocity = velocity.normalized()
+	_translate_location(velocity * move_speed * delta * ((camera.position.z +10) * 0.1))
+
 func _pan(delta: float) -> void:
+	if not _is_panning or not allow_pan:
+		return
 	var displacement = _get_mouse_displacement()
+	var velocity = Vector3(displacement.x, 0, displacement.y) * pan_speed * delta * ((camera.position.z +10) * 0.1)
+	_translate_location(-velocity)
 
 func _zoom(delta: float) -> void:
 	# calculate the new zoom
@@ -150,4 +173,14 @@ func _realign_camera(location: Vector3) -> void:
 	if _last_zoomed_in_pos.y > viewport_height * 0.5 and _last_zoomed_out_pos.y < _last_zoomed_in_pos.y and _zooming_out:
 		displacement.y *= 0.1
 
-	position -= displacement
+	_translate_location(-displacement)
+
+func _translate_location(vec: Vector3) -> void:
+	position += vec
+	Events.emit_signal("camera_moved", position)
+
+func _freeze() -> void:
+	_is_frozen = true
+
+func _unfreeze() -> void:
+	_is_frozen = false

@@ -9,19 +9,24 @@
 script = ExtResource("1_78whg")
 
 [node name="GodMovement" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 1, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1)
 script = ExtResource("2_ubci8")
-pan_speed = null
+pan_speed = 1.0
 allow_pan = null
+move_speed = null
 min_zoom = 2
 max_zoom = 25
-zoom_speed = 4.0
+zoom_speed = 10.0
 zoom_speed_damp = 0.8
 zoom_to_cursor = true
 
-[node name="Camera3D" type="Camera3D" parent="GodMovement"]
+[node name="Elevation" type="Node3D" parent="GodMovement"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="GodMovement/Elevation"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, -2.98023e-08, 0, 2.98023e-08, 1, 0, 0, 1)
 current = true
 fov = 90.0
 size = 2.0
