@@ -1,7 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://c18dd8k328vgq"]
+[gd_scene load_steps=5 format=3 uid="uid://c18dd8k328vgq"]
 
 [ext_resource type="Script" path="res://scenes/game/levels/Button.gd" id="1_icqlx"]
-[ext_resource type="Script" path="res://scenes/game/levels/level1.gd" id="1_s5n5m"]
 [ext_resource type="MeshLibrary" uid="uid://dckq2yo4jhkaa" path="res://assets/ph_tiles.tres" id="2_wefkj"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_bb5t8"]
@@ -10,7 +9,6 @@
 points = PackedVector3Array(1.01587, 0.015873, 1.01587, -1.01587, -0.015873, -1.01587, -1.01587, 0.015873, -1.01587, 1.01587, -0.015873, -1.01587, -1.01587, -0.015873, 1.01587, -1.01587, 0.015873, 1.01587, 1.01587, 0.015873, -1.01587, 1.01587, -0.015873, 1.01587)
 
 [node name="Level1" type="Node3D"]
-script = ExtResource("1_s5n5m")
 
 [node name="GridMap" type="GridMap" parent="."]
 unique_name_in_owner = true

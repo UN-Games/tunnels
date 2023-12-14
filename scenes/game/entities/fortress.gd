@@ -7,7 +7,7 @@ var _fire_rate = 0.2
 var _damage = 1
 var _max_range = 1000
 var _bullet_speed = 10
-var _initial_empty_area = 5
+var _initial_empty_area: Vector2i = Vector2i(5, 5)
 
 # On ready spawn the fortress
 
@@ -21,7 +21,7 @@ func _ready():
 	# move half the size of the fortress to the right and down
 	transform.origin = Vector3(0.5, 0, 0.5)
 	print("Fortress ready")
-	Events.emit_signal("excavation_requested", Vector2(0, 0), _initial_empty_area, 2)
+	Events.emit_signal("excavation_requested", Vector2i(0, 0), _initial_empty_area, 2)
 
 # update
 func _process(delta):

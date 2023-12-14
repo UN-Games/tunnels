@@ -1,12 +1,15 @@
-[gd_scene load_steps=3 format=3 uid="uid://jm40vheiaay1"]
+[gd_scene load_steps=4 format=3 uid="uid://jm40vheiaay1"]
 
 [ext_resource type="Script" path="res://scenes/game/game_world.gd" id="1_78whg"]
-[ext_resource type="Script" path="res://scenes/game/entities/god_movement.gd" id="2_ubci8"]
+[ext_resource type="MeshLibrary" uid="uid://dckq2yo4jhkaa" path="res://assets/ph_tiles.tres" id="2_jd2ir"]
+[ext_resource type="Script" path="res://scenes/game/entities/rts_camera.gd" id="2_ubci8"]
 
 [node name="GameWorld" type="Node3D"]
 script = ExtResource("1_78whg")
+_mesh_lib = ExtResource("2_jd2ir")
 
-[node name="GodMovement" type="Node3D" parent="."]
+[node name="RTSCamera" type="Node3D" parent="."]
+unique_name_in_owner = true
 script = ExtResource("2_ubci8")
 pan_speed = 1.0
 min_zoom = 5
@@ -15,11 +18,11 @@ zoom_speed = 5.0
 zoom_speed_damp = 0.8
 zoom_to_cursor = true
 
-[node name="Elevation" type="Node3D" parent="GodMovement"]
+[node name="Elevation" type="Node3D" parent="RTSCamera"]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 0.258819, 0.965925, 0, -0.965925, 0.258819, 0, 2, 0)
 
-[node name="Camera3D" type="Camera3D" parent="GodMovement/Elevation"]
+[node name="Camera3D" type="Camera3D" parent="RTSCamera/Elevation"]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, -2.98023e-08, 0, 2.98023e-08, 1, 0, 0, 1)
 current = true

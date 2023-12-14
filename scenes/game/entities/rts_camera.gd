@@ -1,4 +1,5 @@
 extends Node3D
+class_name  RTSCamera
 
 @onready var camera: Camera3D = %Elevation/Camera3D
 @onready var viewport_width: int = get_viewport().get_size().x
@@ -41,7 +42,7 @@ const RAY_LENGTH = 1000
 func _ready() -> void:
 	Events.connect("camera_freeze_requested", _freeze)
 	Events.connect("camera_unfreeze_requested", _unfreeze)
-	Events.connect("click_selection_requested", _excavate_on_click)
+	#Events.connect("click_selection_requested", _excavate_on_click)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -203,7 +204,7 @@ func _excavate_on_click(ability:int = 0) -> void:
 	# TODO: check if the click hit a tile using the 3 planes
 
 	# convert the 3d point to a new vector2d point omiting the y axis
-	ground_point = Vector2(floori(ground_point.x), floori(ground_point.z))
+	ground_point = Vector2i(floori(ground_point.x), floori(ground_point.z))
 	# if the ability 1 is active
 	match ability:
 		1:
