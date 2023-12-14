@@ -1,24 +1,168 @@
-[gd_scene load_steps=4 format=3 uid="uid://c18dd8k328vgq"]
+[gd_scene load_steps=6 format=3 uid="uid://c18dd8k328vgq"]
 
 [ext_resource type="Script" path="res://scenes/game/levels/Button.gd" id="1_icqlx"]
+[ext_resource type="Script" path="res://scenes/game/levels/level1.gd" id="1_s5n5m"]
+[ext_resource type="MeshLibrary" uid="uid://dckq2yo4jhkaa" path="res://assets/ph_tiles.tres" id="2_wefkj"]
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_5emcx"]
+[sub_resource type="BoxMesh" id="BoxMesh_bb5t8"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_8q1r3"]
 points = PackedVector3Array(1.01587, 0.015873, 1.01587, -1.01587, -0.015873, -1.01587, -1.01587, 0.015873, -1.01587, 1.01587, -0.015873, -1.01587, -1.01587, -0.015873, 1.01587, -1.01587, 0.015873, 1.01587, 1.01587, 0.015873, -1.01587, 1.01587, -0.015873, 1.01587)
 
 [node name="Level1" type="Node3D"]
+script = ExtResource("1_s5n5m")
+
+[node name="GridMap" type="GridMap" parent="."]
+unique_name_in_owner = true
+mesh_library = ExtResource("2_wefkj")
+cell_size = Vector3(1, 0.9, 1)
+cell_octant_size = 2
+metadata/_editor_floor_ = Vector3(0, 1, 0)
 
 [node name="Ground" type="Area3D" parent="."]
+visible = false
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
-mesh = SubResource("PlaneMesh_5emcx")
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 0)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 0)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D7" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 2)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D8" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D9" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 2)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D10" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 2)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D11" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D12" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 4)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D13" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 4)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D14" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 4)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D15" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 4)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D21" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -6)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D22" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, -6)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D23" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -6)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D24" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -6)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D25" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, -6)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D26" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D27" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, -4)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D28" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -4)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D29" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -4)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D30" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, -4)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D31" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D32" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, -2)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D33" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -2)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D34" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -2)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D35" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, -2)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D16" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D17" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 6)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D18" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 6)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D19" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 6)
+mesh = SubResource("BoxMesh_bb5t8")
+
+[node name="MeshInstance3D20" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 6)
+mesh = SubResource("BoxMesh_bb5t8")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
 shape = SubResource("ConvexPolygonShape3D_8q1r3")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 1, 0)
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3

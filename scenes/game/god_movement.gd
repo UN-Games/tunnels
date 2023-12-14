@@ -86,10 +86,12 @@ func _input(event):
 	if event.is_action_pressed("camera_zoom_in"):
 		_zoom_direction = -1
 		_zooming_in = true
+		zoom_to_cursor = true
 
 	if event.is_action_pressed("camera_zoom_out"):
 		_zoom_direction = 1
 		_zooming_out = true
+		zoom_to_cursor = true
 
 	if event.is_action_released("camera_zoom_in"):
 		# if the mous pos in the viewport is less than half the viewport width set las
@@ -138,6 +140,8 @@ func _zoom(delta: float) -> void:
 		_zoom_direction = 0
 		_zooming_in = false
 		_zooming_out = false
+		zoom_to_cursor = false
+
 
 func _get_mouse_displacement() -> Vector2:
 	var current_mouse_pos = get_viewport().get_mouse_position()
@@ -157,21 +161,27 @@ func _realign_camera(location: Vector3) -> void:
 	# if the x pos of the last zoomed in pos is less than the half width of the viewport
 	# and the x pos of the last zoomed out pos is greater than the half width of the viewport
 	if _last_zoomed_in_pos.x < viewport_width * 0.5 and _last_zoomed_out_pos.x > _last_zoomed_in_pos.x and _zooming_out:
-		displacement.x *= 0.1
+		displacement.x *= 0.95
 	# if the x pos of the last zoomed in pos is greater than the half width of the viewport
 	# and the x pos of the last zoomed out pos is less than the half width of the viewport
 	if _last_zoomed_in_pos.x > viewport_width * 0.5 and _last_zoomed_out_pos.x < _last_zoomed_in_pos.x and _zooming_out:
-		displacement.x *= 0.1
+		displacement.x *= 0.95
 
 	# if the y pos of the last zoomed in pos is less than the half height of the viewport
 	# and the y pos of the last zoomed out pos is greater than the half height of the viewport
 	if _last_zoomed_in_pos.y < viewport_height * 0.5 and _last_zoomed_out_pos.y > _last_zoomed_in_pos.y and _zooming_out:
-		displacement.y *= 0.1
+		displacement.z *= 0.95
 
 	# if the y pos of the last zoomed in pos is greater than the half height of the viewport
 	# and the y pos of the last zoomed out pos is less than the half height of the viewport
 	if _last_zoomed_in_pos.y > viewport_height * 0.5 and _last_zoomed_out_pos.y < _last_zoomed_in_pos.y and _zooming_out:
-		displacement.y *= 0.1
+		displacement.z *= 0.95
+
+	# multiply with lower values when the displacement is bigger math.pow(0.95, displacement.x) only displacements bigger than 1
+	if abs(displacement.x) > 1:
+		displacement.x *= pow(0.95, abs(displacement.x))
+	if abs(displacement.z) > 1:
+		displacement.z *= pow(0.95, abs(displacement.z))
 
 	_translate_location(-displacement)
 

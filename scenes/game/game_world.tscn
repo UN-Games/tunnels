@@ -1,9 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://jm40vheiaay1"]
+[gd_scene load_steps=3 format=3 uid="uid://jm40vheiaay1"]
 
 [ext_resource type="Script" path="res://scenes/game/game_world.gd" id="1_78whg"]
 [ext_resource type="Script" path="res://scenes/game/god_movement.gd" id="2_ubci8"]
-
-[sub_resource type="QuadMesh" id="QuadMesh_4m4f4"]
 
 [node name="GameWorld" type="Node3D"]
 script = ExtResource("1_78whg")
@@ -12,11 +10,9 @@ script = ExtResource("1_78whg")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1)
 script = ExtResource("2_ubci8")
 pan_speed = 1.0
-allow_pan = null
-move_speed = null
-min_zoom = 2
+min_zoom = 5
 max_zoom = 25
-zoom_speed = 10.0
+zoom_speed = 5.0
 zoom_speed_damp = 0.8
 zoom_to_cursor = true
 
@@ -30,23 +26,7 @@ transform = Transform3D(1, 0, 0, 0, 1, -2.98023e-08, 0, 2.98023e-08, 1, 0, 0, 1)
 current = true
 fov = 90.0
 size = 2.0
+far = 5000.0
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
-mesh = SubResource("QuadMesh_4m4f4")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -0.5)
-mesh = SubResource("QuadMesh_4m4f4")
-
-[node name="MeshInstance3D4" type="MeshInstance3D" parent="."]
-transform = Transform3D(3, 0, 0, 0, -1.31134e-07, 3, 0, -3, -1.31134e-07, 0, -2.42583, 6.23252e-08)
-mesh = SubResource("QuadMesh_4m4f4")
-
-[node name="MeshInstance3D5" type="MeshInstance3D" parent="."]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0.00703144, -0.890487, -1.71887)
-mesh = SubResource("QuadMesh_4m4f4")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0.5)
-mesh = SubResource("QuadMesh_4m4f4")
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 1, 0)

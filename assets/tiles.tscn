@@ -1,0 +1,67 @@
+[gd_scene load_steps=22 format=3 uid="uid://dck2plcww8n2t"]
+
+[ext_resource type="PackedScene" uid="uid://de6fj0h8qjkh5" path="res://assets/models/kenney/banner.glb" id="1_uxhcb"]
+[ext_resource type="PackedScene" uid="uid://cag0betit18kv" path="res://assets/models/kenney/barrel.glb" id="2_yq5n2"]
+[ext_resource type="PackedScene" uid="uid://utggeulrtmwm" path="res://assets/models/kenney/character-human.glb" id="3_twjp1"]
+[ext_resource type="PackedScene" uid="uid://c06faltu1rabx" path="res://assets/models/kenney/character-orc.glb" id="4_6up6j"]
+[ext_resource type="PackedScene" uid="uid://bip5gawde1d1" path="res://assets/models/kenney/chest.glb" id="5_x2yhf"]
+[ext_resource type="PackedScene" uid="uid://2dklxniswq5m" path="res://assets/models/kenney/coin.glb" id="6_dvcly"]
+[ext_resource type="PackedScene" uid="uid://dug45l8aerhs5" path="res://assets/models/kenney/column.glb" id="7_rs3vm"]
+[ext_resource type="PackedScene" uid="uid://dirn5vb7rw648" path="res://assets/models/kenney/dirt.glb" id="8_jhjay"]
+[ext_resource type="PackedScene" uid="uid://jrck67n1uahd" path="res://assets/models/kenney/floor-detail.glb" id="9_y8ta8"]
+[ext_resource type="PackedScene" uid="uid://cr3i8ne0o8078" path="res://assets/models/kenney/floor.glb" id="10_dqy6r"]
+[ext_resource type="PackedScene" uid="uid://dx7xxg628doi5" path="res://assets/models/kenney/gate.glb" id="11_qyw80"]
+[ext_resource type="PackedScene" uid="uid://couthyeem472v" path="res://assets/models/kenney/rocks.glb" id="12_4alaa"]
+[ext_resource type="PackedScene" uid="uid://d0p3j5mwowr2t" path="res://assets/models/kenney/stairs.glb" id="13_62mjc"]
+[ext_resource type="PackedScene" uid="uid://qhxm20axnnc" path="res://assets/models/kenney/stones.glb" id="14_22vv3"]
+[ext_resource type="PackedScene" uid="uid://c37w68pigdlug" path="res://assets/models/kenney/trap.glb" id="15_al4vu"]
+[ext_resource type="PackedScene" uid="uid://dt06h3ysv8gtf" path="res://assets/models/kenney/wall-half.glb" id="16_525qs"]
+[ext_resource type="PackedScene" uid="uid://cg0odsy6h5neu" path="res://assets/models/kenney/wall-narrow.glb" id="17_ogxhw"]
+[ext_resource type="PackedScene" uid="uid://cwjig2p1lrctm" path="res://assets/models/kenney/wall-opening.glb" id="18_736j2"]
+[ext_resource type="PackedScene" uid="uid://h73x6ni34swq" path="res://assets/models/kenney/wall.glb" id="19_owxvo"]
+[ext_resource type="PackedScene" uid="uid://vo217a0ilgip" path="res://assets/models/kenney/wood-structure.glb" id="20_pa172"]
+[ext_resource type="PackedScene" uid="uid://bei4jqr81bsxn" path="res://assets/models/kenney/wood-support.glb" id="21_aj1fp"]
+
+[node name="Tiles" type="Node3D"]
+
+[node name="banner2" parent="." instance=ExtResource("1_uxhcb")]
+
+[node name="barrel2" parent="." instance=ExtResource("2_yq5n2")]
+
+[node name="character-human2" parent="." instance=ExtResource("3_twjp1")]
+
+[node name="character-orc2" parent="." instance=ExtResource("4_6up6j")]
+
+[node name="chest2" parent="." instance=ExtResource("5_x2yhf")]
+
+[node name="coin2" parent="." instance=ExtResource("6_dvcly")]
+
+[node name="column2" parent="." instance=ExtResource("7_rs3vm")]
+
+[node name="dirt2" parent="." instance=ExtResource("8_jhjay")]
+
+[node name="floor-detail2" parent="." instance=ExtResource("9_y8ta8")]
+
+[node name="floor2" parent="." instance=ExtResource("10_dqy6r")]
+
+[node name="gate2" parent="." instance=ExtResource("11_qyw80")]
+
+[node name="rocks2" parent="." instance=ExtResource("12_4alaa")]
+
+[node name="stairs2" parent="." instance=ExtResource("13_62mjc")]
+
+[node name="stones2" parent="." instance=ExtResource("14_22vv3")]
+
+[node name="trap2" parent="." instance=ExtResource("15_al4vu")]
+
+[node name="wall-half2" parent="." instance=ExtResource("16_525qs")]
+
+[node name="wall-narrow2" parent="." instance=ExtResource("17_ogxhw")]
+
+[node name="wall-opening2" parent="." instance=ExtResource("18_736j2")]
+
+[node name="wall2" parent="." instance=ExtResource("19_owxvo")]
+
+[node name="wood-structure2" parent="." instance=ExtResource("20_pa172")]
+
+[node name="wood-support2" parent="." instance=ExtResource("21_aj1fp")]
