@@ -29,3 +29,38 @@ far = 5000.0
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 1, 0)
+
+[node name="Control" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CanvasLayer" type="CanvasLayer" parent="Control"]
+unique_name_in_owner = true
+
+[node name="Coins" type="Label" parent="Control/CanvasLayer"]
+unique_name_in_owner = true
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -70.0
+offset_bottom = 23.0
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0.921569, 0.701961, 0, 1)
+theme_override_colors/font_shadow_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 100
+text = "Coins: "
+
+[node name="Lifes" type="Label" parent="Control/CanvasLayer"]
+offset_right = 63.0
+offset_bottom = 23.0
+theme_override_colors/font_color = Color(0.945098, 0, 0.188235, 1)
+theme_override_colors/font_shadow_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 100
+text = "Lifes: 10"

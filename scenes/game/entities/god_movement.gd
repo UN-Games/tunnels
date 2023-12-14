@@ -32,13 +32,16 @@ var _zoom_direction: float = 0
 var _is_frozen: bool = false
 
 
-const GROUND_PLANE = Plane(Vector3.UP, Vector3(0, 1.4, 0))
+const GROUND_PLANE_0 = Plane(Vector3.UP, Vector3(0, 0, 0))
+const GROUND_PLANE_1 = Plane(Vector3.UP, Vector3(0, 1, 0))
+const GROUND_PLANE_2 = Plane(Vector3.UP, Vector3(0, 2, 0))
 const RAY_LENGTH = 1000
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	Events.connect("camera_freeze_requested", _freeze)
 	Events.connect("camera_unfreeze_requested", _unfreeze)
+	Events.connect("click_selection_requested", _excavate_on_click)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -53,8 +56,6 @@ func _process(delta: float) -> void:
 
 
 func _input(event):
-	if event.is_action_pressed("select"):
-		_print_click_location()
 	if event is InputEventMouseMotion:
 		# debug
 		# if the mouse is on the edges minus a margin(25px) move the camera on the x axis
@@ -144,7 +145,6 @@ func _zoom(delta: float) -> void:
 		_zooming_out = false
 		zoom_to_cursor = false
 
-
 func _get_mouse_displacement() -> Vector2:
 	var current_mouse_pos = get_viewport().get_mouse_position()
 	var displacement = current_mouse_pos - _last_mouse_pos
@@ -155,7 +155,7 @@ func _get_ground_click_location() -> Vector3:
 	var mouse_pos = get_viewport().get_mouse_position()
 	var ray_from = camera.project_ray_origin(mouse_pos)
 	var ray_to = ray_from + camera.project_ray_normal(mouse_pos) * RAY_LENGTH
-	return GROUND_PLANE.intersects_ray(ray_from, ray_to)
+	return GROUND_PLANE_1.intersects_ray(ray_from, ray_to)
 
 func _realign_camera(location: Vector3) -> void:
 	var new_location:Vector3 = _get_ground_click_location()
@@ -191,15 +191,28 @@ func _translate_location(vec: Vector3) -> void:
 	position += vec
 	Events.emit_signal("camera_moved", position)
 
-# func print where th click location is
-func _print_click_location() -> void:
-	var ground_point = _get_ground_click_location()
-	# convert the 3d point to a new vector2d point omiting the y axis
-	ground_point = Vector2(floori(ground_point.x), floori(ground_point.z))
-	Events.emit_signal("excavation_requested", ground_point)
-
 func _freeze() -> void:
 	_is_frozen = true
 
 func _unfreeze() -> void:
 	_is_frozen = false
+
+# func print where th click location is
+func _excavate_on_click(ability:int = 0) -> void:
+	var ground_point = _get_ground_click_location()
+	# TODO: check if the click hit a tile using the 3 planes
+
+	# convert the 3d point to a new vector2d point omiting the y axis
+	ground_point = Vector2(floori(ground_point.x), floori(ground_point.z))
+	# if the ability 1 is active
+	match ability:
+		1:
+			Events.emit_signal("explosion_requested", ground_point, 7)
+		2:
+			# TODO: change hte ability to build a wall
+			Events.emit_signal("explosion_requested", ground_point, 2)
+		3:
+			# TODO: change hte ability to build a tower
+			Events.emit_signal("explosion_requested", ground_point, 3)
+		_:
+			Events.emit_signal("excavation_requested", ground_point)

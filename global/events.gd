@@ -6,4 +6,10 @@ signal camera_freeze_requested()
 signal camera_unfreeze_requested()
 
 # excavation signals
+signal click_selection_requested(position)
 signal excavation_requested(position, size, flr_mnt)
+signal explosion_requested(position, size)
+
+# game signals
+# get coins
+signal coin_collected(amount)
