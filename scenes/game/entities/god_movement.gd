@@ -32,7 +32,7 @@ var _zoom_direction: float = 0
 var _is_frozen: bool = false
 
 
-const GROUND_PLANE = Plane(Vector3.UP, 0)
+const GROUND_PLANE = Plane(Vector3.UP, Vector3(0, 1.4, 0))
 const RAY_LENGTH = 1000
 
 # Called when the node enters the scene tree for the first time.
@@ -53,6 +53,8 @@ func _process(delta: float) -> void:
 
 
 func _input(event):
+	if event.is_action_pressed("select"):
+		_print_click_location()
 	if event is InputEventMouseMotion:
 		# debug
 		# if the mouse is on the edges minus a margin(25px) move the camera on the x axis
@@ -188,6 +190,13 @@ func _realign_camera(location: Vector3) -> void:
 func _translate_location(vec: Vector3) -> void:
 	position += vec
 	Events.emit_signal("camera_moved", position)
+
+# func print where th click location is
+func _print_click_location() -> void:
+	var ground_point = _get_ground_click_location()
+	# convert the 3d point to a new vector2d point omiting the y axis
+	ground_point = Vector2(floori(ground_point.x), floori(ground_point.z))
+	Events.emit_signal("excavation_requested", ground_point)
 
 func _freeze() -> void:
 	_is_frozen = true

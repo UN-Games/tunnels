@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://4vs32l0pd8j1"]
+
+[ext_resource type="Script" path="res://scenes/game/entities/fortress.gd" id="1_75o7q"]
+[ext_resource type="PackedScene" uid="uid://vo217a0ilgip" path="res://assets/models/kenney/wood-structure.glb" id="2_jcqix"]
+[ext_resource type="PackedScene" uid="uid://h73x6ni34swq" path="res://assets/models/kenney/wall.glb" id="3_1qxos"]
+[ext_resource type="PackedScene" uid="uid://bip5gawde1d1" path="res://assets/models/kenney/chest.glb" id="4_shjlj"]
+
+[node name="Fortress" type="Node3D"]
+script = ExtResource("1_75o7q")
+
+[node name="base" parent="." instance=ExtResource("2_jcqix")]
+unique_name_in_owner = true
+
+[node name="column" parent="base" instance=ExtResource("3_1qxos")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="cannon" parent="base/column" instance=ExtResource("4_shjlj")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[connection signal="ready" from="." to="." method="_on_ready"]
