@@ -1,0 +1,67 @@
+[gd_scene load_steps=9 format=3 uid="uid://be42gs8bgt2jn"]
+
+[ext_resource type="PackedScene" uid="uid://cjemhrtmmuwtp" path="res://assets/models/tunnels/wall_block.glb" id="1_tqkh1"]
+[ext_resource type="Texture2D" uid="uid://dr31fyigqpq5k" path="res://assets/textures/ground_uv1.png" id="2_8svlb"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cc8dc"]
+size = Vector3(80, 80, 80)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q8gpl"]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_3botd"]
+_surfaces = [{
+"aabb": AABB(-40, 0, -40, 80, 1e-05, 80),
+"format": 34896613377,
+"index_count": 6,
+"index_data": PackedByteArray(0, 0, 3, 0, 1, 0, 0, 0, 2, 0, 3, 0),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 4,
+"vertex_data": PackedByteArray(0, 0, 0, 0, 254, 255, 0, 0, 255, 255, 0, 0, 254, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 0, 0, 0, 0, 0, 0)
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_psxju"]
+resource_name = "ground_Plano_002"
+_surfaces = [{
+"aabb": AABB(-40, 0, -40, 80, 1e-05, 80),
+"attribute_data": PackedByteArray(0, 0, 255, 255, 255, 255, 255, 255, 0, 0, 0, 0, 255, 255, 0, 0),
+"format": 34896613399,
+"index_count": 6,
+"index_data": PackedByteArray(0, 0, 3, 0, 1, 0, 0, 0, 2, 0, 3, 0),
+"material": SubResource("StandardMaterial3D_q8gpl"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 4,
+"vertex_data": PackedByteArray(0, 0, 0, 0, 254, 255, 255, 191, 255, 255, 0, 0, 254, 255, 255, 191, 0, 0, 0, 0, 0, 0, 255, 191, 255, 255, 0, 0, 0, 0, 255, 191, 255, 255, 255, 127, 255, 255, 255, 127, 255, 255, 255, 127, 255, 255, 255, 127)
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_3botd")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ivuxp"]
+normal_enabled = true
+normal_texture = ExtResource("2_8svlb")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ct24e"]
+size = Vector3(80, 1, 80)
+
+[node name="Tunnel2" instance=ExtResource("1_tqkh1")]
+
+[node name="wall" parent="." index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -99.6854, 0, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="wall" index="0"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="wall/StaticBody3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 39.766, 0)
+shape = SubResource("BoxShape3D_cc8dc")
+
+[node name="ground" type="MeshInstance3D" parent="." index="1"]
+mesh = SubResource("ArrayMesh_psxju")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_ivuxp")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="ground" index="0"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ground/StaticBody3D" index="0"]
+shape = SubResource("BoxShape3D_ct24e")
