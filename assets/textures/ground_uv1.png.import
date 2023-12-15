@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bcar74y731k04"
-path.s3tc="res://.godot/imported/colormap.png-16db1a91ecf35706e437ac4240d99099.s3tc.ctex"
+uid="uid://dr31fyigqpq5k"
+path.s3tc="res://.godot/imported/ground_uv1.png-dcbac29a94fbe795959c3ba0252f79ee.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/models/kenney/Textures/colormap.png"
-dest_files=["res://.godot/imported/colormap.png-16db1a91ecf35706e437ac4240d99099.s3tc.ctex"]
+source_file="res://assets/textures/ground_uv1.png"
+dest_files=["res://.godot/imported/ground_uv1.png-dcbac29a94fbe795959c3ba0252f79ee.s3tc.ctex"]
 
 [params]
 
