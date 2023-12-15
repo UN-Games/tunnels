@@ -20,7 +20,6 @@ var target_lock = null
 func _ready():
 	# move half the size of the fortress to the right and down
 	transform.origin = Vector3(0.5, 0, 0.5)
-	print("Fortress ready")
 	Events.emit_signal("excavation_requested", Vector2i(0, 0), _initial_empty_area, 2)
 	Events.emit_signal("path_excavation_requested", Vector2i(0, 0), Vector2i(10,0))
 

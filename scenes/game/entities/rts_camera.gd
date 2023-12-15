@@ -7,10 +7,10 @@ class_name  RTSCamera
 @onready var viewport_min_x_move: int = viewport_width
 @onready var viewport_min_y_move: int = viewport_height
 # export the pan speed with a slider from 0 to 10 by 0.5 increments
-@export_range(0, 10, 0.5) var pan_speed: float = 2.0
+@export_range(0, 10, 0.1) var pan_speed: float = 0.2
 @export var allow_pan: bool = true
 # movement
-@export_range(0, 100, 10) var move_speed: float = 10.0
+@export_range(0, 100, 1) var move_speed: float = 5.0
 # zoom
 @export_range(0, 1000) var min_zoom: int = 1
 @export_range(0, 1000) var max_zoom: int = 90
@@ -35,7 +35,7 @@ var _is_frozen: bool = false
 
 const GROUND_PLANE_0 = Plane(Vector3.UP, Vector3(0, 0, 0))
 const GROUND_PLANE_1 = Plane(Vector3.UP, Vector3(0, 1, 0))
-const GROUND_PLANE_2 = Plane(Vector3.UP, Vector3(0, 2, 0))
+const GROUND_PLANE_2 = Plane(Vector3.UP, Vector3(0, 3, 0))
 const RAY_LENGTH = 1000
 
 # Called when the node enters the scene tree for the first time.
@@ -115,7 +115,7 @@ func _move(delta: float) -> void:
 	if Input.is_action_pressed("right"):
 		velocity += transform.basis.x
 	velocity = velocity.normalized()
-	_translate_location(velocity * move_speed * delta * ((camera.position.z +10) * 0.1))
+	_translate_location(velocity * move_speed * delta * ((max_zoom +150 - camera.position.z) * 0.005))
 
 func _pan(delta: float) -> void:
 	if not _is_panning or not allow_pan:
@@ -156,7 +156,7 @@ func _get_ground_click_location() -> Vector3:
 	var mouse_pos = get_viewport().get_mouse_position()
 	var ray_from = camera.project_ray_origin(mouse_pos)
 	var ray_to = ray_from + camera.project_ray_normal(mouse_pos) * RAY_LENGTH
-	return GROUND_PLANE_1.intersects_ray(ray_from, ray_to)
+	return GROUND_PLANE_0.intersects_ray(ray_from, ray_to)
 
 func _realign_camera(location: Vector3) -> void:
 	var new_location:Vector3 = _get_ground_click_location()
@@ -204,7 +204,8 @@ func _excavate_on_click(ability:int = 0) -> void:
 	# TODO: check if the click hit a tile using the 3 planes
 
 	# convert the 3d point to a new vector2d point omiting the y axis
-	ground_point = Vector2i(floori(ground_point.x), floori(ground_point.z))
+	# TODO fix the final position
+	ground_point = Vector2i(floori(ground_point.x - (ground_point.x * (camera.position.z - 1) * 0.001)), floori(ground_point.z - (ground_point.z * (camera.position.z - 1) * 0.001)))
 	# if the ability 1 is active
 	match ability:
 		1:

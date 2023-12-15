@@ -19,7 +19,6 @@ func _ready():
 
 # func to generate level items
 func _generate_level(pos: Vector2i = Vector2i(0, 0), size: Vector2i = Vector2i(0, 0)):
-	print("generate level in position: ", pos, " with size: ", size)
 	# is grid map mesh library is not set return
 	if _grid_map.mesh_library == null:
 		print("mesh library not set")

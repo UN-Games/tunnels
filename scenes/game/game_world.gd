@@ -27,10 +27,10 @@ func _ready() -> void:
 	_grid_level._generate_level(Vector2i(), Vector2i(100,100))
 	add_child(_grid_level)
 	add_child(fortress.instantiate())
-	_excavate_path_to(Vector2i(0,0), Vector2i(10,randi_range(-5, 5)))
 	_initial_coins_label_text = _coins_label.text
 	Events.connect("path_excavation_requested", _excavate_path_to)
-	_pop_spawning_point(Vector2i(15,-10))
+	await _excavate_path_to(Vector2i(0,0), Vector2i(10,randi_range(-5, 5)), 0.1)
+	await _pop_spawning_point(Vector2i(-15,-10))
 
 func _process(delta: float) -> void:
 	_coins_label.text = _initial_coins_label_text + str(_coins)
@@ -56,19 +56,20 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("reload"):
 		get_tree().reload_current_scene()
 
-func _excavate_path_to(start: Vector2i, end: Vector2i) -> Array[Vector2i]:
+func _excavate_path_to(start: Vector2i, end: Vector2i, dur: float = 0.1) -> Array[Vector2i]:
 	# Generate a path from start to end.
 	var pg:Array[Vector2i] = _path_generator.generate_path_to(start, end)
 	# Excavate the path. based on the path generated.
 	for tile:Vector2i in pg:
 		_grid_level.excavate_at_position(tile, Vector2i.ONE, 1)
+		await get_tree().create_timer(dur).timeout
 	return pg
 
-func _pop_spawning_point(pos: Vector2i, amount: int = 10, rate: int = 2) -> void:
+func _pop_spawning_point(pos: Vector2i, amount: int = 10, rate: int = 2, dur: float = 0.1) -> void:
 	# clear a small area around the spawning point. explosion of radius 3.
 	Events.emit_signal("explosion_requested", pos, 3)
 	# create a path pointing the fortress.
-	var path:Array[Vector2i] = _excavate_path_to(pos, Vector2i(0,0))
+	var path:Array[Vector2i] = await _excavate_path_to(pos, Vector2i(0,0), dur)
 
 	# creat a 3d curve to move the enemy along the path.
 	var curve3D: Curve3D = Curve3D.new()
@@ -77,24 +78,21 @@ func _pop_spawning_point(pos: Vector2i, amount: int = 10, rate: int = 2) -> void
 	for point:Vector2i in path:
 		curve3D.add_point(Vector3(point.x + 0.5, 0.5, point.y + 0.5))
 
-	var path_raw: Path3D = Path3D.new()
-	add_child(path_raw)
-	path_raw.curve = curve3D
-
-	var enemy = basic_enemy.instantiate()
-	# move the instance 0.5 units to the right and down.
+	# spawn the amount of enemies. and wait for the rate.
+	for i in range(amount):
+		var path_raw: Path3D = Path3D.new()
+		path_raw.curve = curve3D
+		# create enemy
+		var enemy = basic_enemy.instantiate()
+		enemy.set_path(path_raw)
+		# add to the scene.
+		add_child(enemy)
+		await get_tree().create_timer(rate).timeout
 
 	# create follow path
-	var follow_path: PathFollow3D = PathFollow3D.new()
-	path_raw.add_child(follow_path)
-	follow_path.add_child(enemy)
+	#var follow_path: PathFollow3D = PathFollow3D.new()
+	#path_raw.add_child(follow_path)
+
+	#follow_path.add_child(enemy)
 
 	# instanciate X enemies every Y seconds.
-
-
-	var curr_distance:float = 0.0
-
-	while curr_distance < curve3D.point_count-1:
-		curr_distance += 0.02
-		follow_path.progress = clamp(curr_distance, 0, curve3D.point_count-1.00001)
-		await get_tree().create_timer(0.01).timeout
