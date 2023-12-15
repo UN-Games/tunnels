@@ -18,10 +18,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -35.0
-offset_top = -50.5
-offset_right = 35.0
-offset_bottom = 50.5
+offset_left = -250.0
+offset_top = -153.5
+offset_right = 250.0
+offset_bottom = 153.5
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -33,12 +33,14 @@ layout_mode = 2
 focus_neighbor_left = NodePath("../Quit")
 focus_neighbor_top = NodePath("../Quit")
 focus_neighbor_right = NodePath("../Options")
+theme_override_font_sizes/font_size = 100
 text = "Play"
 
 [node name="Options" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 focus_neighbor_left = NodePath("../Play")
 focus_neighbor_right = NodePath("../Quit")
+theme_override_font_sizes/font_size = 50
 text = "Options"
 
 [node name="Quit" type="Button" parent="MarginContainer/VBoxContainer"]
@@ -46,6 +48,7 @@ layout_mode = 2
 focus_neighbor_left = NodePath("../Options")
 focus_neighbor_right = NodePath("../Play")
 focus_neighbor_bottom = NodePath("../Play")
+theme_override_font_sizes/font_size = 50
 text = "Quit
 "
 

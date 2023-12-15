@@ -214,6 +214,6 @@ func _excavate_on_click(ability:int = 0) -> void:
 			Events.emit_signal("explosion_requested", ground_point, 2)
 		3:
 			# TODO: change hte ability to build a tower
-			Events.emit_signal("explosion_requested", ground_point, 3)
+			Events.emit_signal("explosion_requested", ground_point, 2)
 		_:
 			Events.emit_signal("excavation_requested", ground_point)

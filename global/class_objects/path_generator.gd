@@ -6,7 +6,7 @@ var _path: Array[Vector2i]
 func _init() -> void:
     pass
 
-func generate_path(initial_pos: Vector2i, final_pos: Vector2i) -> Array[Vector2i]:
+func generate_path_to(initial_pos: Vector2i, final_pos: Vector2i) -> Array[Vector2i]:
     var init_pos: Vector2i = initial_pos
     var fin_pos: Vector2i = final_pos
 
@@ -25,19 +25,28 @@ func generate_path(initial_pos: Vector2i, final_pos: Vector2i) -> Array[Vector2i
     var x: int = init_pos.x
     var y: int = init_pos.y
 
-    if dir_score == 3:
-        # while loop unitl reaching the final pos
-        while x != fin_pos.x or y != fin_pos.y:
-            if not _path.has(Vector2i(x, y)):
-                _path.append(Vector2i(x, y))
-            # Can only go right or up
-            var choice = randi_range(0, 1)
-
-            if choice == 0 and x < fin_pos.x:
-                x += 1
-            elif choice == 1 and y < fin_pos.y:
-                y += 1
-
-    print("Path generated: ", _path)
+    # while loop until reaching the final pos
+    while x != fin_pos.x or y != fin_pos.y:
+        if not _path.has(Vector2i(x, y)):
+            _path.append(Vector2i(x, y))
+        # Can only go right or up
+        var choice = randi_range(0, 1)
+        match dir_score:
+            3, 9:
+                if choice == 0 and x < fin_pos.x:
+                    x += 1
+                elif choice == 1 and y != fin_pos.y:
+                    y += 1 if y < fin_pos.y else -1
+            6, 12:
+                if choice == 0 and x > fin_pos.x:
+                    x -= 1
+                elif choice == 1 and y != fin_pos.y:
+                    y += 1 if y < fin_pos.y else -1
+            1, 2, 4, 8:
+                choice = randi_range(0, 2)
+                if choice == 0 and x != fin_pos.x:
+                    x += 1 if x < fin_pos.x else -1
+                elif choice == 1 and y != fin_pos.y:
+                    y += 1 if y < fin_pos.y else -1
 
     return _path

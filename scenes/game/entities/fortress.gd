@@ -22,6 +22,7 @@ func _ready():
 	transform.origin = Vector3(0.5, 0, 0.5)
 	print("Fortress ready")
 	Events.emit_signal("excavation_requested", Vector2i(0, 0), _initial_empty_area, 2)
+	Events.emit_signal("path_excavation_requested", Vector2i(0, 0), Vector2i(10,0))
 
 # update
 func _process(delta):
@@ -35,12 +36,12 @@ func _process(delta):
 				_fire_rate -= delta
 			else:
 				_fire_rate = 0.2
-				_fire()
+				# _fire()
 	else:
 		target_lock = _find_nearest_enemy()
 
 func _fire():
-	var bullet = coin_bullet.instance()
+	var bullet = coin_bullet.instantiate()
 	bullet.global_transform.origin = _cannon.global_transform.origin
 	bullet._damage = _damage
 	bullet.speed = _bullet_speed

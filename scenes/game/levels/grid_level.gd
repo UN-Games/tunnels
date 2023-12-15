@@ -14,8 +14,8 @@ func _ready():
 	# set the scale of tiles to 0.5
 	_grid_map.cell_size = Vector3(1,0.9,1)
 	add_child(_grid_map)
-	Events.connect("excavation_requested", excavate_to_position)
-
+	Events.connect("explosion_requested", explode_to_position)
+	Events.connect("excavation_requested", excavate_at_position)
 
 # func to generate level items
 func _generate_level(pos: Vector2i = Vector2i(0, 0), size: Vector2i = Vector2i(0, 0)):
@@ -91,14 +91,12 @@ func _remove_tiles (pos: Vector2i = Vector2i(), size: Vector2i = Vector2i.ONE, f
 				else:
 					set_item(cell_pos, -1, flr + z)
 
-func excavate_to_position (pos: Vector2i = Vector2i(), size: Vector2i = Vector2i.ONE, flr_mnt: int = 1) -> void:
+func excavate_at_position (pos: Vector2i = Vector2i(), size: Vector2i = Vector2i.ONE, flr_mnt: int = 1) -> void:
 	# excavate the floor at the given position
 	_remove_tiles(pos, size, 0, flr_mnt)
 	_spawn_floor(pos, size, 0, 6, 7)
 
 func explode_to_position (pos: Vector2i = Vector2i(), size: int = 3) -> void:
-	# spend 10 coins to explode, if the player has less than 10 coins do nothing
-	print("explode")
 	# remove the floor at the given position in a radius of size the first 9 tiles around
 	# are removed, then the surrounding 16 have a 66% chance of being removed
 	# finally the surrounding 24 have a 33% chance of being removed
@@ -116,12 +114,16 @@ func explode_to_position (pos: Vector2i = Vector2i(), size: int = 3) -> void:
 				continue
 			# if the cell is in the first 9 surrounding tiles remove it
 			if x < (half_size) + 1 and x > (half_size) -1 and y < (half_size) + 1 and y > (half_size) -1:
+				# clear all the floors
+				_remove_tiles(cell_pos, Vector2i.ONE, 0, 6)
 				_spawn_floor(cell_pos, Vector2i.ONE, 0, 6, 7)
 			elif x < (half_size) + 2 and x > (half_size) -2 and y < (half_size) + 2 and y > (half_size) -2:
+				_remove_tiles(cell_pos, Vector2i.ONE, 0, 6)
 				_spawn_floor(cell_pos, Vector2i.ONE, 0, 6, 7)
 			# if the cell is in the surrounding 16 tiles remove it with a 66% chance
 			elif x < (half_size) + 3 and x > (half_size) -3 and y < (half_size) + 3 and y > (half_size) -3:
 				if (randi() % 100) < 80 + boom_prob:
+					_remove_tiles(cell_pos, Vector2i.ONE, 0, 6)
 					_spawn_floor(cell_pos, Vector2i.ONE, 0, 6, 7)
 			# if the cell is in the surrounding 24 tiles remove it with a 33% chance
 			elif x < 7 and y < 7:
