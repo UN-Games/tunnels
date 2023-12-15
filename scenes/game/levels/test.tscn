@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://hw2708vmdgul"]
 
 [ext_resource type="MeshLibrary" uid="uid://cb8pjb38j0ovm" path="res://assets/models/tunnels/tunnels_library.tres" id="1_sttq1"]
-[ext_resource type="PackedScene" uid="uid://c7xbstemh6ogb" path="res://assets/models/tunnels/tower.glb" id="2_i8qcu"]
+[ext_resource type="PackedScene" uid="uid://c7xbstemh6ogb" path="res://assets/models/tunnels/trolley.glb" id="2_i8qcu"]
 
 [node name="Node3D" type="Node3D"]
 
