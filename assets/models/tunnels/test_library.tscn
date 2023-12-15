@@ -1,10 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://be42gs8bgt2jn"]
+[gd_scene load_steps=9 format=3 uid="uid://d3npx4ue44j58"]
 
 [ext_resource type="PackedScene" uid="uid://cjemhrtmmuwtp" path="res://assets/models/tunnels/wall_block.glb" id="1_tqkh1"]
 [ext_resource type="Texture2D" uid="uid://dr31fyigqpq5k" path="res://assets/textures/ground_uv1.png" id="2_8svlb"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cc8dc"]
-size = Vector3(80, 80, 80)
+size = Vector3(100, 100, 100)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q8gpl"]
 
@@ -43,7 +43,7 @@ normal_enabled = true
 normal_texture = ExtResource("2_8svlb")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ct24e"]
-size = Vector3(80, 1, 80)
+size = Vector3(100, 1, 100)
 
 [node name="Tunnel2" instance=ExtResource("1_tqkh1")]
 

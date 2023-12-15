@@ -2,26 +2,28 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://di87vns6cnyq6"
-path="res://.godot/imported/colormap_tunnel.png-9f27f102d90427ed06ce481b93bf1b9b.ctex"
+uid="uid://cfi5lca0hmri8"
+path.s3tc="res://.godot/imported/bomb_colormap_tunnel.png-3bed99be2c4bb8d540310a32ac995fc9.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
+generator_parameters={}
 
 [deps]
 
-source_file="res://assets/models/kenney/Textures/colormap_tunnel.png"
-dest_files=["res://.godot/imported/colormap_tunnel.png-9f27f102d90427ed06ce481b93bf1b9b.ctex"]
+source_file="res://assets/models/tunnels/bomb_colormap_tunnel.png"
+dest_files=["res://.godot/imported/bomb_colormap_tunnel.png-3bed99be2c4bb8d540310a32ac995fc9.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
-mipmaps/generate=false
+mipmaps/generate=true
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""
@@ -31,4 +33,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0
