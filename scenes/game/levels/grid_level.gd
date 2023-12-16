@@ -21,7 +21,6 @@ func _ready():
 func _generate_level(pos: Vector2i = Vector2i(0, 0), size: Vector2i = Vector2i(0, 0)):
 	# is grid map mesh library is not set return
 	if _grid_map.mesh_library == null:
-		print("mesh library not set")
 		return
 	_spawn_floor(pos, size, 0, 0, 0)
 	_spawn_dungeon(pos, size, 0, 1)

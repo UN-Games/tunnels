@@ -15,25 +15,25 @@ size = Vector3(1, 0.2, 1)
 
 [node name="AreaLibrary" type="Node3D"]
 
-[node name="Ground" parent="." groups=["path"] instance=ExtResource("1_kmuih")]
+[node name="Ground" parent="." instance=ExtResource("1_kmuih")]
 
-[node name="Area3D" type="Area3D" parent="Ground"]
+[node name="Area3D" type="Area3D" parent="Ground" groups=["path"]]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/Area3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
 shape = SubResource("BoxShape3D_n1cep")
 
-[node name="Wall" parent="." groups=["wall"] instance=ExtResource("3_xonov")]
+[node name="Wall" parent="." instance=ExtResource("3_xonov")]
 
-[node name="Area3D" type="Area3D" parent="Wall"]
+[node name="Area3D" type="Area3D" parent="Wall" groups=["wall"]]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Wall/Area3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
 shape = SubResource("BoxShape3D_5u1fk")
 
-[node name="Spawn" parent="." groups=["spawn"] instance=ExtResource("3_51fip")]
+[node name="Spawn" parent="." instance=ExtResource("3_51fip")]
 
-[node name="Area3D" type="Area3D" parent="Spawn"]
+[node name="Area3D" type="Area3D" parent="Spawn" groups=["spawner"]]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Spawn/Area3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)

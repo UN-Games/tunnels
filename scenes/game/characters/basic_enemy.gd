@@ -13,6 +13,8 @@ var _enemy_progress:float = 0.0
 func _ready() -> void:
 	# add to the scene
 	# change the character instance parent to the path follow
+	# hide the character
+	_character.hide()
 	_character.reparent(_path_follow_3d, false)
 	pass
 
@@ -30,6 +32,10 @@ func set_path(path: Path3D) -> void:
 	_path_follow_3d.progress_ratio = 0
 
 func _on_spawning_state_entered() -> void:
+	# show the character
+	_character.show()
+	# add to group enemies
+	add_to_group("enemies")
 	_anim_player.play("spawn")
 	await _anim_player.animation_finished
 	_state_chart.send_event("to_travelling")

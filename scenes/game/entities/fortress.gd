@@ -1,6 +1,10 @@
 extends Node3D
+class_name Fortress
 
-@onready var _cannon: Node3D = %base/column/cannon
+@export var _bullet: PackedScene = null
+
+@onready var _tower: Node3D = %Tower
+@onready var _cannon: Node3D = %Tower/Rotator/Cannon
 
 var _total_life = 10
 var _fire_rate = 0.2
@@ -13,24 +17,22 @@ var _initial_empty_area: Vector2i = Vector2i(5, 5)
 
 
 # Preload the bullet model
-var coin_bullet = preload("res://scenes/game/entities/coin_bullet.tscn")
 var target_lock = null
 
 # on ready call the signal of excavate
 func _ready():
 	# move half the size of the fortress to the right and down
-	transform.origin = Vector3(0.5, 0, 0.5)
+	#_tower.position = Vector3(0.5, 2, 0.5)
 	Events.emit_signal("excavation_requested", Vector2i(0, 0), _initial_empty_area, 2)
 	Events.emit_signal("path_excavation_requested", Vector2i(0, 0), Vector2i(10,0))
 
-# update
 func _process(delta):
 	if target_lock != null:
 		var distance = (target_lock.global_transform.origin - global_transform.origin).length()
 		if distance > _max_range:
 			target_lock = null
 		else:
-			look_at(target_lock.global_transform.origin, Vector3.UP)
+			look_at(target_lock.global_position, Vector3.UP)
 			if _fire_rate > 0:
 				_fire_rate -= delta
 			else:
@@ -40,7 +42,7 @@ func _process(delta):
 		target_lock = _find_nearest_enemy()
 
 func _fire():
-	var bullet = coin_bullet.instantiate()
+	var bullet = _bullet.instantiate()
 	bullet.global_transform.origin = _cannon.global_transform.origin
 	bullet._damage = _damage
 	bullet.speed = _bullet_speed
@@ -58,3 +60,6 @@ func _find_nearest_enemy():
 			nearest_enemy = enemy
 			nearest_enemy_distance = distance
 	return nearest_enemy
+
+func get_pos() -> Vector2i:
+	return Vector2i(floori(position.x), floori(position.z))

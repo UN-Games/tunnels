@@ -1,6 +1,5 @@
 extends Node3D
 
-
 var damage = 1;
 var speed = 10;
 var target = null;
