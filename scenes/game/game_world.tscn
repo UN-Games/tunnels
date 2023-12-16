@@ -1,14 +1,14 @@
 [gd_scene load_steps=5 format=3 uid="uid://jm40vheiaay1"]
 
 [ext_resource type="Script" path="res://scenes/game/game_world.gd" id="1_78whg"]
-[ext_resource type="MeshLibrary" uid="uid://dckq2yo4jhkaa" path="res://assets/ph_tiles.tres" id="2_jd2ir"]
+[ext_resource type="MeshLibrary" uid="uid://wrjlopkwmtv4" path="res://assets/generate_path.tres" id="2_833ox"]
 [ext_resource type="Script" path="res://scenes/game/entities/rts_camera.gd" id="2_ubci8"]
 [ext_resource type="PackedScene" uid="uid://clhmdwhg31ver" path="res://scenes/game/characters/basic_enemy.tscn" id="3_ua0hv"]
 
 [node name="GameWorld" type="Node3D"]
 script = ExtResource("1_78whg")
 _coins = 100
-_mesh_lib = ExtResource("2_jd2ir")
+_mesh_lib = ExtResource("2_833ox")
 basic_enemy = ExtResource("3_ua0hv")
 
 [node name="RTSCamera" type="Node3D" parent="."]

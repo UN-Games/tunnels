@@ -1,0 +1,40 @@
+[gd_scene load_steps=7 format=3 uid="uid://b54gpm11ygyfd"]
+
+[ext_resource type="PackedScene" uid="uid://dhxcvy1bb56gk" path="res://assets/models/tunnels/ground.glb" id="1_kmuih"]
+[ext_resource type="PackedScene" uid="uid://cwaybbvx725lc" path="res://assets/models/tunnels/spawner.glb" id="3_51fip"]
+[ext_resource type="PackedScene" uid="uid://cjemhrtmmuwtp" path="res://assets/models/tunnels/wall_block.glb" id="3_xonov"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_n1cep"]
+size = Vector3(1, 0.1, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5u1fk"]
+size = Vector3(1, 0.9, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_i04we"]
+size = Vector3(1, 0.2, 1)
+
+[node name="AreaLibrary" type="Node3D"]
+
+[node name="Ground" parent="." groups=["path"] instance=ExtResource("1_kmuih")]
+
+[node name="Area3D" type="Area3D" parent="Ground"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+shape = SubResource("BoxShape3D_n1cep")
+
+[node name="Wall" parent="." groups=["wall"] instance=ExtResource("3_xonov")]
+
+[node name="Area3D" type="Area3D" parent="Wall"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+shape = SubResource("BoxShape3D_5u1fk")
+
+[node name="Spawn" parent="." groups=["spawn"] instance=ExtResource("3_51fip")]
+
+[node name="Area3D" type="Area3D" parent="Spawn"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Spawn/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+shape = SubResource("BoxShape3D_i04we")

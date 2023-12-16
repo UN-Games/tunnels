@@ -23,11 +23,11 @@ func _generate_level(pos: Vector2i = Vector2i(0, 0), size: Vector2i = Vector2i(0
 	if _grid_map.mesh_library == null:
 		print("mesh library not set")
 		return
-	_spawn_floor(pos, size, 0, 6, 7)
-	_spawn_dungeon(pos, size, 0, 5)
+	_spawn_floor(pos, size, 0, 0, 0)
+	_spawn_dungeon(pos, size, 0, 1)
 
 # func to spawn the floor
-func _spawn_floor (pos: Vector2i = Vector2i(), size: Vector2i = Vector2i() ,  flr: int = 0, item:int = 6, item2: int = 7) -> void:
+func _spawn_floor (pos: Vector2i = Vector2i(), size: Vector2i = Vector2i() ,  flr: int = 0, item:int = 0, item2: int = 0) -> void:
 	# Spawn a floor of size x size at the given position minus half the size
 	# set a random floor tile between item and item2 more probable to be item 66%
 	# choose a random rotation int beetween 0, 10, 16 and 22
@@ -35,15 +35,15 @@ func _spawn_floor (pos: Vector2i = Vector2i(), size: Vector2i = Vector2i() ,  fl
 	for x in range(size.x):
 		for y in range(size.y):
 			cell_pos = Vector2i(x - int (size.x *0.5) + pos.x, y - int (size.y * 0.5) + pos.y)
-			# if the item is a floor tile (6,7) do nothing
-			if get_item(cell_pos) == 6 or get_item(cell_pos) == 7:
+			# if the item is a floor tile (0) do nothing
+			if get_item(cell_pos) == 0 or get_item(cell_pos) == 0:
 				continue
 			if (randi() % 100) < 33:
 				set_item(cell_pos, item, flr, _randi_y_orientation())
 			else:
 				set_item(cell_pos, item2, flr, _randi_y_orientation())
 
-func _spawn_dungeon (pos: Vector2i = Vector2i(), size: Vector2i = Vector2i(), flr: int = 0, item:int = 5) -> void:
+func _spawn_dungeon (pos: Vector2i = Vector2i(), size: Vector2i = Vector2i(), flr: int = 0, item:int = 1) -> void:
 	# Spawn a dungeon of size x size at the given position minus half the size
 	var previous_floor:bool = false
 	var previous_ceil:bool = false
@@ -58,7 +58,7 @@ func _spawn_dungeon (pos: Vector2i = Vector2i(), size: Vector2i = Vector2i(), fl
 				# choose a random position near x,y (x-1, x+1, y-1, y+1) and spawn a floor tile
 				var rand_x = randi() % 3 - 1
 				var rand_y = randi() % 3 - 1
-				_spawn_floor(Vector2i(x - int (size.x *0.5) + pos.x + rand_x, y - int (size.y * 0.5) + pos.y + rand_y), Vector2i.ONE, flr, 6, 7)
+				_spawn_floor(Vector2i(x - int (size.x *0.5) + pos.x + rand_x, y - int (size.y * 0.5) + pos.y + rand_y), Vector2i.ONE, flr)
 			if (randi() % 100) < prob:
 				previous_floor = false
 				set_item(Vector2i(x - int (size.x *0.5) + pos.x, y - int (size.y * 0.5) + pos.y), item, flr)
@@ -72,7 +72,7 @@ func _spawn_dungeon (pos: Vector2i = Vector2i(), size: Vector2i = Vector2i(), fl
 					previous_ceil = false
 			else:
 				# spawn a random floor tile
-				_spawn_floor(Vector2i(x - int (size.x *0.5) + pos.x, y - int (size.y * 0.5) + pos.y), Vector2i.ONE, flr, 6, 7)
+				_spawn_floor(Vector2i(x - int (size.x *0.5) + pos.x, y - int (size.y * 0.5) + pos.y), Vector2i.ONE, flr)
 				previous_floor = true
 				previous_ceil = false
 
@@ -85,7 +85,7 @@ func _remove_tiles (pos: Vector2i = Vector2i(), size: Vector2i = Vector2i.ONE, f
 				# get the position of the cell
 				cell_pos = Vector2i(x - int (size.x *0.5) + pos.x, y - int (size.y * 0.5) + pos.y)
 				# if the item is a floor tile (6,7) do nothing
-				if get_item(cell_pos) == 6 or get_item(cell_pos) == 7:
+				if get_item(cell_pos) == 0 or get_item(cell_pos) == 0:
 					continue
 				else:
 					set_item(cell_pos, -1, flr + z)
@@ -93,7 +93,7 @@ func _remove_tiles (pos: Vector2i = Vector2i(), size: Vector2i = Vector2i.ONE, f
 func excavate_at_position (pos: Vector2i = Vector2i(), size: Vector2i = Vector2i.ONE, flr_mnt: int = 1) -> void:
 	# excavate the floor at the given position
 	_remove_tiles(pos, size, 0, flr_mnt)
-	_spawn_floor(pos, size, 0, 6, 7)
+	_spawn_floor(pos, size, 0)
 
 func explode_to_position (pos: Vector2i = Vector2i(), size: int = 3) -> void:
 	# remove the floor at the given position in a radius of size the first 9 tiles around
@@ -106,8 +106,8 @@ func explode_to_position (pos: Vector2i = Vector2i(), size: int = 3) -> void:
 		for y in range(size):
 			# get the position of the cell
 			cell_pos = Vector2i(x - int (half_size) + pos.x, y - int (half_size) + pos.y)
-			# if the item is a floor tile (6,7) do nothing
-			if get_item(cell_pos) == 6 or get_item(cell_pos) == 7:
+			# if the item is a floor tile (0) do nothing
+			if get_item(cell_pos) == 0 or get_item(cell_pos) == 0:
 				# increase the probability of spawning a floor tile
 				boom_prob += 4
 				continue
@@ -115,19 +115,19 @@ func explode_to_position (pos: Vector2i = Vector2i(), size: int = 3) -> void:
 			if x < (half_size) + 1 and x > (half_size) -1 and y < (half_size) + 1 and y > (half_size) -1:
 				# clear all the floors
 				_remove_tiles(cell_pos, Vector2i.ONE, 0, 6)
-				_spawn_floor(cell_pos, Vector2i.ONE, 0, 6, 7)
+				_spawn_floor(cell_pos, Vector2i.ONE, 0)
 			elif x < (half_size) + 2 and x > (half_size) -2 and y < (half_size) + 2 and y > (half_size) -2:
 				_remove_tiles(cell_pos, Vector2i.ONE, 0, 6)
-				_spawn_floor(cell_pos, Vector2i.ONE, 0, 6, 7)
+				_spawn_floor(cell_pos, Vector2i.ONE, 0)
 			# if the cell is in the surrounding 16 tiles remove it with a 66% chance
 			elif x < (half_size) + 3 and x > (half_size) -3 and y < (half_size) + 3 and y > (half_size) -3:
 				if (randi() % 100) < 80 + boom_prob:
 					_remove_tiles(cell_pos, Vector2i.ONE, 0, 6)
-					_spawn_floor(cell_pos, Vector2i.ONE, 0, 6, 7)
+					_spawn_floor(cell_pos, Vector2i.ONE, 0)
 			# if the cell is in the surrounding 24 tiles remove it with a 33% chance
 			elif x < 7 and y < 7:
 				if (randi() % 100) < boom_prob:
-					_spawn_floor(cell_pos, Vector2i.ONE, 0, 6, 7)
+					_spawn_floor(cell_pos, Vector2i.ONE, 0)
 
 # returns the _grid_map
 func get_grid_map() -> GridMap:
