@@ -2,18 +2,26 @@
 
 [ext_resource type="PackedScene" uid="uid://cjemhrtmmuwtp" path="res://assets/models/tunnels/wall_block.glb" id="1_tqkh1"]
 [ext_resource type="Texture2D" uid="uid://dr31fyigqpq5k" path="res://assets/textures/ground_uv1.png" id="2_8svlb"]
+[ext_resource type="Texture2D" uid="uid://rtvyon4cla8d" path="res://assets/models/tunnels/ground_colormap_tunnel.png" id="2_hu4gk"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cc8dc"]
 size = Vector3(100, 100, 100)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q8gpl"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yyw1p"]
+resource_name = "Material.004"
+cull_mode = 2
+albedo_texture = ExtResource("2_hu4gk")
+roughness = 0.5
+normal_enabled = true
+normal_texture = ExtResource("2_8svlb")
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_3botd"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_p54kc"]
 _surfaces = [{
-"aabb": AABB(-40, 0, -40, 80, 1e-05, 80),
+"aabb": AABB(-50, 0, -50, 100, 1e-05, 100),
 "format": 34896613377,
 "index_count": 6,
 "index_data": PackedByteArray(0, 0, 3, 0, 1, 0, 0, 0, 2, 0, 3, 0),
+"name": "Material.004",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 4,
@@ -21,28 +29,25 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_psxju"]
+[sub_resource type="ArrayMesh" id="ArrayMesh_7wn2n"]
 resource_name = "ground_Plano_002"
 _surfaces = [{
-"aabb": AABB(-40, 0, -40, 80, 1e-05, 80),
-"attribute_data": PackedByteArray(0, 0, 255, 255, 255, 255, 255, 255, 0, 0, 0, 0, 255, 255, 0, 0),
+"aabb": AABB(-50, 0, -50, 100, 1e-05, 100),
+"attribute_data": PackedByteArray(229, 87, 172, 250, 84, 87, 172, 250, 229, 87, 49, 250, 84, 87, 49, 250),
 "format": 34896613399,
 "index_count": 6,
 "index_data": PackedByteArray(0, 0, 3, 0, 1, 0, 0, 0, 2, 0, 3, 0),
-"material": SubResource("StandardMaterial3D_q8gpl"),
+"material": SubResource("StandardMaterial3D_yyw1p"),
+"name": "Material.004",
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 4,
-"vertex_data": PackedByteArray(0, 0, 0, 0, 254, 255, 255, 191, 255, 255, 0, 0, 254, 255, 255, 191, 0, 0, 0, 0, 0, 0, 255, 191, 255, 255, 0, 0, 0, 0, 255, 191, 255, 255, 255, 127, 255, 255, 255, 127, 255, 255, 255, 127, 255, 255, 255, 127)
+"vertex_data": PackedByteArray(0, 0, 0, 0, 254, 255, 0, 0, 255, 255, 0, 0, 254, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 0, 0, 0, 0, 0, 0, 255, 127, 255, 191, 255, 127, 255, 191, 255, 127, 255, 191, 255, 127, 255, 191)
 }]
 blend_shape_mode = 0
-shadow_mesh = SubResource("ArrayMesh_3botd")
+shadow_mesh = SubResource("ArrayMesh_p54kc")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ivuxp"]
-normal_enabled = true
-normal_texture = ExtResource("2_8svlb")
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_ct24e"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_xjrjr"]
 size = Vector3(100, 1, 100)
 
 [node name="Tunnel2" instance=ExtResource("1_tqkh1")]
@@ -53,15 +58,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -99.6854, 0, 0)
 [node name="StaticBody3D" type="StaticBody3D" parent="wall" index="0"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="wall/StaticBody3D" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 39.766, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 48.5939, 0)
 shape = SubResource("BoxShape3D_cc8dc")
 
-[node name="ground" type="MeshInstance3D" parent="." index="1"]
-mesh = SubResource("ArrayMesh_psxju")
+[node name="ground2" type="MeshInstance3D" parent="." index="1"]
+mesh = SubResource("ArrayMesh_7wn2n")
 skeleton = NodePath("")
-surface_material_override/0 = SubResource("StandardMaterial3D_ivuxp")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="ground" index="0"]
+[node name="StaticBody3D" type="StaticBody3D" parent="ground2" index="0"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ground/StaticBody3D" index="0"]
-shape = SubResource("BoxShape3D_ct24e")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ground2/StaticBody3D" index="0"]
+shape = SubResource("BoxShape3D_xjrjr")
