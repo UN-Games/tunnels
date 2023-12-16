@@ -22,7 +22,7 @@ var target_lock = null
 # on ready call the signal of excavate
 func _ready():
 	# move half the size of the fortress to the right and down
-	#_tower.position = Vector3(0.5, 2, 0.5)
+	position = Vector3(0.5, 1, 0.5)
 	Events.emit_signal("excavation_requested", Vector2i(0, 0), _initial_empty_area, 2)
 	Events.emit_signal("path_excavation_requested", Vector2i(0, 0), Vector2i(10,0))
 
@@ -32,7 +32,10 @@ func _process(delta):
 		if distance > _max_range:
 			target_lock = null
 		else:
-			look_at(target_lock.global_position, Vector3.UP)
+			look_at(target_lock.get_character_pos(), Vector3.UP)
+			# lock rotation on the Y axis
+			rotation.x = 0
+			rotation.z = 0
 			if _fire_rate > 0:
 				_fire_rate -= delta
 			else:
@@ -55,7 +58,8 @@ func _find_nearest_enemy():
 	var nearest_enemy = null
 	var nearest_enemy_distance = _max_range
 	for enemy in enemies:
-		var distance = (enemy.global_transform.origin - global_transform.origin).length()
+		# get the %Area3D node
+		var distance = (enemy.get_character_pos() - global_transform.origin).length()
 		if distance < nearest_enemy_distance:
 			nearest_enemy = enemy
 			nearest_enemy_distance = distance

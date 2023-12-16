@@ -16,6 +16,7 @@ var _grid_level: GridLevel
 var _path_generator: PathGenerator # TODO: Make this a singleton
 var _fortress: Fortress
 
+const RAYCAST_LENGTH = 1000
 
 
 # Called when the node enters the scene tree for the first time.
@@ -36,6 +37,19 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_coins_label.text = _initial_coins_label_text + str(_coins)
+func _physics_process(delta: float) -> void:
+	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		var space_state = get_world_3d().direct_space_state
+		var mouse_pos:Vector2 = get_viewport().get_mouse_position()
+		var origin:Vector3 = _rts_camera.camera.project_ray_origin(mouse_pos)
+		var end:Vector3 = origin + _rts_camera.camera.project_ray_normal(mouse_pos) * RAYCAST_LENGTH
+		var query = PhysicsRayQueryParameters3D.create(origin, end)
+		query.collide_with_areas = true
+		var rayResult:Dictionary = space_state.intersect_ray(query)
+		if rayResult.size() > 0:
+			print(rayResult)
+			var co:CollisionObject3D = rayResult.get("collider")
+			print(co.get_groups())
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("select"):

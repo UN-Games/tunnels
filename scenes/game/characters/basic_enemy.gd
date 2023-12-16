@@ -4,6 +4,7 @@ extends Node3D
 @onready var _anim_player: AnimationPlayer = %AnimPlayer
 @onready var _state_chart: StateChart = %StateChart
 
+
 @export var _speed:int = 2
 
 var _path_3d: Path3D
@@ -33,10 +34,10 @@ func set_path(path: Path3D) -> void:
 
 func _on_spawning_state_entered() -> void:
 	# show the character
-	_character.show()
 	# add to group enemies
 	add_to_group("enemies")
 	_anim_player.play("spawn")
+	_character.show()
 	await _anim_player.animation_finished
 	_state_chart.send_event("to_travelling")
 
@@ -65,3 +66,7 @@ func _on_despawning_state_entered() -> void:
 	_anim_player.play("despawn")
 	await _anim_player.animation_finished
 	queue_free()
+
+func get_character_pos() -> Vector3:
+	# return the global position of the character
+	return _character.global_transform.origin

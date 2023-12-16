@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://4vs32l0pd8j1"]
+[gd_scene load_steps=10 format=3 uid="uid://4vs32l0pd8j1"]
 
 [ext_resource type="Script" path="res://scenes/game/entities/fortress.gd" id="1_75o7q"]
 [ext_resource type="Texture2D" uid="uid://bvvajuhr6y01j" path="res://assets/models/tunnels/tower_colormap_tunnel.png" id="2_qnpuj"]
@@ -78,7 +78,9 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_6gfii")
 
-[node name="Fortress" type="Node3D"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_s74o5"]
+
+[node name="Fortress" type="Area3D" groups=["fortress"]]
 script = ExtResource("1_75o7q")
 _bullet = ExtResource("2_vt3ph")
 
@@ -100,4 +102,6 @@ skeleton = NodePath("")
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 
-[connection signal="ready" from="." to="." method="_on_ready"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.254, 0)
+shape = SubResource("BoxShape3D_s74o5")

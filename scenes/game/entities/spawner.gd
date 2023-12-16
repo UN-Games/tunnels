@@ -28,11 +28,9 @@ func spawn_enemies(curve3D: Curve3D, amount: int, rate: float) -> void:
 		await get_tree().create_timer(rate).timeout
 
 func _on_emerge_state_entered() -> void:
-	print("emerge")
 	_anim_player.play("Esconder acción]_001")
 	await _anim_player.animation_finished
 	_state_chart.send_event("to_spawning")
 
 func _on_spawning_state_entered() -> void:
-	print("spawning")
 	_anim_player.play("Esconder acción]")
