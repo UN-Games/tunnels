@@ -5,12 +5,8 @@ signal camera_jump_requested(location, duration)
 signal camera_freeze_requested()
 signal camera_unfreeze_requested()
 
-# excavation signals
-#signal click_selection_requested(position)
-signal excavation_requested(position, size, flr_mnt)
-signal path_excavation_requested(from, to)
-signal explosion_requested(position, size)
-
 # game signals
+signal excavation_requested(location, size)
+signal tunnel_requested(start, end)
 # get coins
 signal coin_collected(amount)

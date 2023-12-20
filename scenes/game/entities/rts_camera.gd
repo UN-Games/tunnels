@@ -209,7 +209,7 @@ func _excavate_on_click(ability:int = 0) -> void:
 	# if the ability 1 is active
 	match ability:
 		1:
-			Events.emit_signal("explosion_requested", ground_point, 7)
+			GridLevel.explode_to_position(ground_point, 7)
 		2:
 			# TODO: change hte ability to build a wall
 			Events.emit_signal("explosion_requested", ground_point, 2)
@@ -217,4 +217,4 @@ func _excavate_on_click(ability:int = 0) -> void:
 			# TODO: change hte ability to build a tower
 			Events.emit_signal("explosion_requested", ground_point, 2)
 		_:
-			Events.emit_signal("excavation_requested", ground_point)
+			GridLevel.excavate_at_position(ground_point)

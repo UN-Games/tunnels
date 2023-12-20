@@ -23,8 +23,13 @@ var target_lock = null
 func _ready():
 	# move half the size of the fortress to the right and down
 	position = Vector3(0.5, 1, 0.5)
-	Events.emit_signal("excavation_requested", Vector2i(0, 0), _initial_empty_area, 2)
-	Events.emit_signal("path_excavation_requested", Vector2i(0, 0), Vector2i(10,0))
+	# emit signal to excavate the area
+	#Events.emit_signal("excavation_requested", get_pos(), _initial_empty_area)
+	GridLevel.remove_tiles(get_pos(), _initial_empty_area)
+
+	# Events.emit_signal("excavation_requested", get_pos(), Vector2i(3, 3))
+	#Events.emit_signal("tunnel_requested", get_pos(), Vector2i(25, 0))
+	#GridLevel.excavate_path_to(Vector2i(0, 0), Vector2i(15,-5), 10)
 
 func _process(delta):
 	if target_lock != null:
@@ -32,7 +37,7 @@ func _process(delta):
 		if distance > _max_range:
 			target_lock = null
 		else:
-			look_at(target_lock.get_character_pos(), Vector3.UP)
+			look_at(target_lock.position, Vector3.UP)
 			# lock rotation on the Y axis
 			rotation.x = 0
 			rotation.z = 0
@@ -59,11 +64,11 @@ func _find_nearest_enemy():
 	var nearest_enemy_distance = _max_range
 	for enemy in enemies:
 		# get the %Area3D node
-		var distance = (enemy.get_character_pos() - global_transform.origin).length()
+		var distance = (enemy.position - global_transform.origin).length()
 		if distance < nearest_enemy_distance:
 			nearest_enemy = enemy
 			nearest_enemy_distance = distance
 	return nearest_enemy
 
 func get_pos() -> Vector2i:
-	return Vector2i(floori(position.x), floori(position.z))
+	return Vector2i(floori(global_position.x), floori(global_position.z))

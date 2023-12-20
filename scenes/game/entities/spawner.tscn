@@ -1,17 +1,17 @@
-[gd_scene load_steps=14 format=3 uid="uid://chrxt0f8hvo6p"]
+[gd_scene load_steps=15 format=3 uid="uid://bbgkb18wft3dh"]
 
-[ext_resource type="Script" path="res://scenes/game/entities/spawner.gd" id="1_68xs5"]
-[ext_resource type="PackedScene" uid="uid://clhmdwhg31ver" path="res://scenes/game/characters/basic_enemy.tscn" id="2_bxklo"]
-[ext_resource type="Texture2D" uid="uid://dflvtjqlijwqe" path="res://assets/models/tunnels/spawner_colormap_tunnel.png" id="2_h1ood"]
-[ext_resource type="Script" path="res://addons/godot_state_charts/state_chart.gd" id="3_iwvis"]
-[ext_resource type="Script" path="res://addons/godot_state_charts/compound_state.gd" id="4_qgq83"]
-[ext_resource type="Script" path="res://addons/godot_state_charts/atomic_state.gd" id="5_gn65k"]
-[ext_resource type="Script" path="res://addons/godot_state_charts/transition.gd" id="6_w283f"]
+[ext_resource type="Script" path="res://scenes/game/entities/spawner.gd" id="1_8o8d1"]
+[ext_resource type="PackedScene" uid="uid://bvxb2ywxjdbny" path="res://scenes/game/characters/smart_enemy.tscn" id="2_h5qh6"]
+[ext_resource type="Texture2D" uid="uid://dflvtjqlijwqe" path="res://assets/models/tunnels/spawner_colormap_tunnel.png" id="3_2y6b2"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/state_chart.gd" id="4_t5cya"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/compound_state.gd" id="5_xgh67"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/atomic_state.gd" id="6_ntcxc"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/transition.gd" id="7_dumrk"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8s2vx"]
 resource_name = "Material.004"
 cull_mode = 2
-albedo_texture = ExtResource("2_h1ood")
+albedo_texture = ExtResource("3_2y6b2")
 roughness = 0.5
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_kkupt"]
@@ -34,8 +34,81 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
+[sub_resource type="Animation" id="Animation_0cr0m"]
+resource_name = "despawn"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("spawner:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, -0.1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("spawner:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(2, 2, 2), Vector3(0.1, 0.1, 0.1)]
+}
+
+[sub_resource type="Animation" id="Animation_co5ob"]
+resource_name = "emerge"
+length = 0.416667
+tracks/0/type = "blend_shape"
+tracks/0/imported = true
+tracks/0/enabled = true
+tracks/0/path = NodePath("spawner:plano")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0.0416667, 1, 1, 0.0833333, 1, 0.965706, 0.125, 1, 0.8738, 0.166667, 1, 0.740741, 0.208333, 1, 0.58299, 0.25, 1, 0.41701, 0.291667, 1, 0.259259, 0.333333, 1, 0.1262, 0.375, 1, 0.0342935, 0.416667, 1, 0)
+tracks/1/type = "blend_shape"
+tracks/1/imported = true
+tracks/1/enabled = true
+tracks/1/path = NodePath("spawner:Clave 2")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0.0416667, 1, 0)
+tracks/2/type = "blend_shape"
+tracks/2/imported = true
+tracks/2/enabled = true
+tracks/2/path = NodePath("spawner:Clave 3")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = PackedFloat32Array(0.0416667, 1, 0)
+tracks/3/type = "blend_shape"
+tracks/3/imported = true
+tracks/3/enabled = true
+tracks/3/path = NodePath("spawner:Clave 4")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = PackedFloat32Array(0.0416667, 1, 0)
+tracks/4/type = "blend_shape"
+tracks/4/imported = true
+tracks/4/enabled = true
+tracks/4/path = NodePath("spawner:Clave 5")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = PackedFloat32Array(0.0416667, 1, 0)
+tracks/5/type = "blend_shape"
+tracks/5/imported = true
+tracks/5/enabled = true
+tracks/5/path = NodePath("spawner:Clave 6")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = PackedFloat32Array(0.0416667, 1, 0)
+
 [sub_resource type="Animation" id="Animation_8tlk0"]
-resource_name = "Esconder acción]"
+resource_name = "spawn"
 length = 1.29167
 loop_mode = 1
 tracks/0/type = "blend_shape"
@@ -81,56 +154,11 @@ tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = PackedFloat32Array(0.0416667, 1, 0)
 
-[sub_resource type="Animation" id="Animation_co5ob"]
-resource_name = "Esconder acción]_001"
-length = 0.416667
-tracks/0/type = "blend_shape"
-tracks/0/imported = true
-tracks/0/enabled = true
-tracks/0/path = NodePath("spawner:plano")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0.0416667, 1, 1, 0.0833333, 1, 0.965706, 0.125, 1, 0.8738, 0.166667, 1, 0.740741, 0.208333, 1, 0.58299, 0.25, 1, 0.41701, 0.291667, 1, 0.259259, 0.333333, 1, 0.1262, 0.375, 1, 0.0342935, 0.416667, 1, 0)
-tracks/1/type = "blend_shape"
-tracks/1/imported = true
-tracks/1/enabled = true
-tracks/1/path = NodePath("spawner:Clave 2")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = PackedFloat32Array(0.0416667, 1, 0)
-tracks/2/type = "blend_shape"
-tracks/2/imported = true
-tracks/2/enabled = true
-tracks/2/path = NodePath("spawner:Clave 3")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = PackedFloat32Array(0.0416667, 1, 0)
-tracks/3/type = "blend_shape"
-tracks/3/imported = true
-tracks/3/enabled = true
-tracks/3/path = NodePath("spawner:Clave 4")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = PackedFloat32Array(0.0416667, 1, 0)
-tracks/4/type = "blend_shape"
-tracks/4/imported = true
-tracks/4/enabled = true
-tracks/4/path = NodePath("spawner:Clave 5")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = PackedFloat32Array(0.0416667, 1, 0)
-tracks/5/type = "blend_shape"
-tracks/5/imported = true
-tracks/5/enabled = true
-tracks/5/path = NodePath("spawner:Clave 6")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = PackedFloat32Array(0.0416667, 1, 0)
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_7te4d"]
 _data = {
-"Esconder acción]": SubResource("Animation_8tlk0"),
-"Esconder acción]_001": SubResource("Animation_co5ob")
+"despawn": SubResource("Animation_0cr0m"),
+"emerge": SubResource("Animation_co5ob"),
+"spawn": SubResource("Animation_8tlk0")
 }
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_aqq5e"]
@@ -138,8 +166,8 @@ size = Vector3(1, 0.2, 1)
 
 [node name="Spawner" type="Node3D"]
 unique_name_in_owner = true
-script = ExtResource("1_68xs5")
-basic_enemy = ExtResource("2_bxklo")
+script = ExtResource("1_8o8d1")
+enemy = ExtResource("2_h5qh6")
 
 [node name="spawner" type="MeshInstance3D" parent="."]
 unique_name_in_owner = true
@@ -147,8 +175,8 @@ transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 mesh = SubResource("ArrayMesh_kkupt")
 skeleton = NodePath("")
 "blend_shapes/Clave 2" = 0.0
-"blend_shapes/Clave 3" = 0.555167
-"blend_shapes/Clave 4" = 0.0689276
+"blend_shapes/Clave 3" = 1.0
+"blend_shapes/Clave 4" = 1.0
 "blend_shapes/Clave 5" = 1.0
 "blend_shapes/Clave 6" = 0.0
 blend_shapes/plano = 0.0
@@ -158,6 +186,7 @@ unique_name_in_owner = true
 libraries = {
 "": SubResource("AnimationLibrary_7te4d")
 }
+autoplay = "spawn"
 
 [node name="Area3D" type="Area3D" parent="." groups=["spawner"]]
 
@@ -169,22 +198,32 @@ shape = SubResource("BoxShape3D_aqq5e")
 unique_name_in_owner = true
 editor_description = "States to handle animation
 "
-script = ExtResource("3_iwvis")
+script = ExtResource("4_t5cya")
 
 [node name="CompoundState" type="Node" parent="StateChart"]
-script = ExtResource("4_qgq83")
+script = ExtResource("5_xgh67")
 initial_state = NodePath("Emerge")
 
 [node name="Emerge" type="Node" parent="StateChart/CompoundState"]
-script = ExtResource("5_gn65k")
+script = ExtResource("6_ntcxc")
 
 [node name="ToSpawning" type="Node" parent="StateChart/CompoundState/Emerge"]
-script = ExtResource("6_w283f")
+script = ExtResource("7_dumrk")
 to = NodePath("../../Spawning")
 event = &"to_spawning"
 
 [node name="Spawning" type="Node" parent="StateChart/CompoundState"]
-script = ExtResource("5_gn65k")
+script = ExtResource("6_ntcxc")
+
+[node name="ToDespawning" type="Node" parent="StateChart/CompoundState/Spawning"]
+script = ExtResource("7_dumrk")
+to = NodePath("../../Despawning")
+event = &"to_despawning"
+delay_seconds = 1.0
+
+[node name="Despawning" type="Node" parent="StateChart/CompoundState"]
+script = ExtResource("6_ntcxc")
 
 [connection signal="state_entered" from="StateChart/CompoundState/Emerge" to="." method="_on_emerge_state_entered"]
 [connection signal="state_entered" from="StateChart/CompoundState/Spawning" to="." method="_on_spawning_state_entered"]
+[connection signal="state_entered" from="StateChart/CompoundState/Despawning" to="." method="_on_despawning_state_entered"]

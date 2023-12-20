@@ -1,17 +1,19 @@
-[gd_scene load_steps=6 format=3 uid="uid://jm40vheiaay1"]
+[gd_scene load_steps=7 format=3 uid="uid://jm40vheiaay1"]
 
 [ext_resource type="Script" path="res://scenes/game/game_world.gd" id="1_78whg"]
 [ext_resource type="MeshLibrary" uid="uid://wrjlopkwmtv4" path="res://assets/generate_path.tres" id="2_833ox"]
 [ext_resource type="Script" path="res://scenes/game/entities/rts_camera.gd" id="2_ubci8"]
-[ext_resource type="PackedScene" uid="uid://chrxt0f8hvo6p" path="res://scenes/game/entities/spawner.tscn" id="3_x47sj"]
+[ext_resource type="PackedScene" uid="uid://bbgkb18wft3dh" path="res://scenes/game/entities/spawner.tscn" id="3_oegee"]
 [ext_resource type="PackedScene" uid="uid://4vs32l0pd8j1" path="res://scenes/game/entities/fortress.tscn" id="4_k5b7y"]
+[ext_resource type="PackedScene" uid="uid://m2d80b202i1r" path="res://scenes/game/entities/excavator.tscn" id="5_ihqre"]
 
 [node name="GameWorld" type="Node3D"]
 script = ExtResource("1_78whg")
 _coins = 100
 _mesh_lib = ExtResource("2_833ox")
-spawner = ExtResource("3_x47sj")
+spawner = ExtResource("3_oegee")
 fortress = ExtResource("4_k5b7y")
+excavator = ExtResource("5_ihqre")
 
 [node name="RTSCamera" type="Node3D" parent="."]
 unique_name_in_owner = true

@@ -4,6 +4,7 @@ extends Node3D
 @export var _mesh_lib: MeshLibrary = null
 @export var spawner: PackedScene = null
 @export var fortress: PackedScene = null
+@export var excavator: PackedScene = null
 
 @onready var _coins_label: Label = %Control/CanvasLayer/Coins
 @onready var _rts_camera: RTSCamera = %RTSCamera
@@ -12,31 +13,33 @@ extends Node3D
 
 var _ability: int = 0
 var _initial_coins_label_text: String = ""
-var _grid_level: GridLevel
-var _path_generator: PathGenerator # TODO: Make this a singleton
 var _fortress: Fortress
 
 const RAYCAST_LENGTH = 1000
 
+# On enter the scene tree.
+func _enter_tree() -> void:
+	# Events.
+	Events.connect("excavation_requested", _on_excavation_requested)
+	Events.connect("tunnel_requested", _on_tunnel_requested)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	# generate a new level
-	_grid_level = GridLevel.new(_mesh_lib)
-	_path_generator = PathGenerator.new()
 
 	# Instantiate the level1 scene.
-	_grid_level._generate_level(Vector2i(), Vector2i(100,100))
+	GridLevel.generate_level(_mesh_lib, Vector2i(), Vector2i(50,50))
+
 	_fortress = fortress.instantiate()
-	add_child(_grid_level)
 	add_child(_fortress)
+
+	_pop_spawning_point(Vector2i(-5,randi_range(-2,2)), 1, 2, 0.1)
+
 	_initial_coins_label_text = _coins_label.text
-	Events.connect("path_excavation_requested", _excavate_path_to)
-	await _excavate_path_to(Vector2i(0,0), Vector2i(10,randi_range(-5, 5)), 0.1)
-	await _pop_spawning_point(Vector2i(-15,-10))
+	#await _excavate_path_to(Vector2i(0,0), Vector2i(10,0), 0.1)
 
 func _process(delta: float) -> void:
 	_coins_label.text = _initial_coins_label_text + str(_coins)
+
 func _physics_process(delta: float) -> void:
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		var space_state = get_world_3d().direct_space_state
@@ -72,31 +75,30 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("reload"):
 		get_tree().reload_current_scene()
 
-func _excavate_path_to(start: Vector2i, end: Vector2i, dur: float = 0.1) -> Array[Vector2i]:
-	# Generate a path from start to end.
-	var pg:Array[Vector2i] = _path_generator.generate_path_to(start, end)
-	# Excavate the path. based on the path generated.
-	for tile:Vector2i in pg:
-		_grid_level.excavate_at_position(tile, Vector2i.ONE, 1)
-		await get_tree().create_timer(dur).timeout
-	return pg
-
-func _pop_spawning_point(pos: Vector2i, amount: int = 10, rate: int = 2, dur: float = 0.1) -> void:
+func _pop_spawning_point(pos: Vector2i, amount: int = 10, rate: int = 2, dur: float = 2) -> void:
 	# clear a small area around the spawning point. explosion of radius 3.
-	Events.emit_signal("explosion_requested", pos, 3)
+	GridLevel.explode_to_position(pos, 3)
 	# create a path pointing the fortress.
-	var path:Array[Vector2i] = await _excavate_path_to(pos, _fortress.get_pos(), dur)
+	var excavator_inst = excavator.instantiate()
+	add_child(excavator_inst)
+	excavator_inst.setup(pos, _fortress.get_pos(), dur)
 
-	# creat a 3d curve to move the enemy along the path.
-	var curve3D: Curve3D = Curve3D.new()
-
-	# for every point in the path, add a point to the curve.
-	for point:Vector2i in path:
-		curve3D.add_point(Vector3(point.x + 0.5, 0.5, point.y + 0.5))
-
-	# spawn the amount of enemies. and wait for the rate.
-	# instantiate a spawner.
 	var spawner_inst = spawner.instantiate()
 	add_child(spawner_inst)
-	spawner_inst.set_pos(Vector3(pos.x + 0.5, 0.5, pos.y + 0.5))
-	spawner_inst.spawn_enemies(curve3D, amount, rate)
+	spawner_inst.position = Vector3(pos.x + 0.5, 0.5, pos.y + 0.5)
+	await excavator_inst.excavate_path()
+	# set the position of the spawner.
+	spawner_inst.spawn_enemies(_fortress.get_pos(), amount, rate)
+
+func _on_excavation_requested(pos: Vector2i, size: Vector2i) -> void:
+	# instantiate an excavator.
+	var excavator_inst = excavator.instantiate()
+	add_child(excavator_inst)
+	excavator_inst.setup(pos, _fortress.get_pos())
+	excavator_inst.excavate_at_position(pos, size)
+
+func _on_tunnel_requested(start: Vector2i, end: Vector2i) -> void:
+	var excavator_inst: Excavator = excavator.instantiate()
+	add_child(excavator_inst)
+	excavator_inst.setup(start, end, 0.1)
+	excavator_inst.excavate_path()

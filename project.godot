@@ -18,6 +18,8 @@ config/icon="res://assets/icons/icon.svg"
 [autoload]
 
 Events="*res://global/autoloads/events.gd"
+GridLevel="*res://global/autoloads/grid_level.gd"
+PathGenerator="*res://global/autoloads/path_generator.gd"
 
 [display]
 
