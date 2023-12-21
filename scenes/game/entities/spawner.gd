@@ -10,7 +10,7 @@ class_name Spawner
 @onready var _mesh: MeshInstance3D = %spawner
 
 func _ready() -> void:
-	print(_state_chart.editor_description)
+	pass
 
 func set_pos(pos: Vector3) -> void:
 	_mesh.position = pos
@@ -35,7 +35,6 @@ func _on_spawning_state_entered() -> void:
 	_anim_player.play("spawn")
 
 func _on_despawning_state_entered() -> void:
-	print("despawning")
 	_anim_player.play("despawn")
 	await _anim_player.animation_finished
 	queue_free()

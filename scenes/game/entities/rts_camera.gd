@@ -217,4 +217,4 @@ func _excavate_on_click(ability:int = 0) -> void:
 			# TODO: change hte ability to build a tower
 			Events.emit_signal("explosion_requested", ground_point, 2)
 		_:
-			GridLevel.excavate_at_position(ground_point)
+			GridLevel.remove_tiles(ground_point)

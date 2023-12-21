@@ -2396,7 +2396,7 @@ tilt_enabled = false
 
 [node name="Character" type="Area3D" parent="Path3D/PathFollow3D" groups=["enemies"]]
 unique_name_in_owner = true
-transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -0.5, 0)
+transform = Transform3D(-1, 0, -2.53518e-06, 0, 1, 0, 2.53518e-06, 0, -1, 0, 0.5, 0)
 
 [node name="character-orc" type="Node3D" parent="Path3D/PathFollow3D/Character"]
 

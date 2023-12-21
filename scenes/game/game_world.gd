@@ -14,6 +14,7 @@ extends Node3D
 var _ability: int = 0
 var _initial_coins_label_text: String = ""
 var _fortress: Fortress
+var _lifes: int = 10
 
 const RAYCAST_LENGTH = 1000
 
@@ -22,8 +23,8 @@ func _enter_tree() -> void:
 	# Events.
 	Events.connect("excavation_requested", _on_excavation_requested)
 	Events.connect("tunnel_requested", _on_tunnel_requested)
+	Events.connect("enemy_reached_fortress", _on_enemy_reached_fortress)
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 
 	# Instantiate the level1 scene.
@@ -32,7 +33,7 @@ func _ready() -> void:
 	_fortress = fortress.instantiate()
 	add_child(_fortress)
 
-	_pop_spawning_point(Vector2i(-5,randi_range(-2,2)), 1, 2, 0.1)
+	_pop_spawning_point(Vector2i(-10,randi_range(-10,0)), 20, 1, 0.2) # TODO: Fix bug when Y is > 0.
 
 	_initial_coins_label_text = _coins_label.text
 	#await _excavate_path_to(Vector2i(0,0), Vector2i(10,0), 0.1)
@@ -75,13 +76,13 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("reload"):
 		get_tree().reload_current_scene()
 
-func _pop_spawning_point(pos: Vector2i, amount: int = 10, rate: int = 2, dur: float = 2) -> void:
+func _pop_spawning_point(pos: Vector2i, amount: int = 10, rate: float = 2, speed: float = 2) -> void:
 	# clear a small area around the spawning point. explosion of radius 3.
 	GridLevel.explode_to_position(pos, 3)
 	# create a path pointing the fortress.
 	var excavator_inst = excavator.instantiate()
 	add_child(excavator_inst)
-	excavator_inst.setup(pos, _fortress.get_pos(), dur)
+	excavator_inst.setup(pos, _fortress.get_pos(), speed)
 
 	var spawner_inst = spawner.instantiate()
 	add_child(spawner_inst)
@@ -102,3 +103,11 @@ func _on_tunnel_requested(start: Vector2i, end: Vector2i) -> void:
 	add_child(excavator_inst)
 	excavator_inst.setup(start, end, 0.1)
 	excavator_inst.excavate_path()
+
+func _on_enemy_reached_fortress() -> void:
+	if _lifes <= 0:
+		await get_tree().create_timer(2).timeout
+		get_tree().reload_current_scene()
+		return
+	_lifes -= 1
+	Events.emit_signal("lifes_changed", _lifes)

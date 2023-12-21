@@ -28,7 +28,7 @@ func _ready():
 	GridLevel.remove_tiles(get_pos(), _initial_empty_area)
 
 	# Events.emit_signal("excavation_requested", get_pos(), Vector2i(3, 3))
-	#Events.emit_signal("tunnel_requested", get_pos(), Vector2i(25, 0))
+	Events.emit_signal("tunnel_requested", get_pos(), Vector2i(10, 0))
 	#GridLevel.excavate_path_to(Vector2i(0, 0), Vector2i(15,-5), 10)
 
 func _process(delta):

@@ -41,9 +41,17 @@ func set_astar_grid() -> void:
 	for solid in solids:
 		astar_grid.set_point_solid(solid, true)
 
-	var path = astar_grid.get_point_path(_start, _target)
+	# move the start point randomly around the 8 points around the start point
+	var start_points = [Vector2i(0, 1), Vector2i(1, 1), Vector2i(1, 0), Vector2i(1, -1), Vector2i(0, -1), Vector2i(-1, -1), Vector2i(-1, 0), Vector2i(-1, 1)]
+	var start_point = start_points[randi() % 8]
+	var random_out = _start + start_point
+
+	var path = astar_grid.get_point_path(random_out, _target)
 	# remove the last point because it is the target
 	path.remove_at(path.size() - 1)
+	# add the start point to the path
+	path.insert(0, _start)
+
 	var curve_inst = Curve3D.new()
 	for point in path:
 		curve_inst.add_point(Vector3(point.x + 0.5, 0, point.y + 0.5))
@@ -75,6 +83,7 @@ func _on_attacking_state_entered() -> void:
 	var attack_anim = ["attack-kick-left", "attack-kick-right", "attack-melee-left", "attack-melee-right"][randi() % 4]
 	_anim_player.play(attack_anim)
 	await _anim_player.animation_finished
+	Events.emit_signal("enemy_reached_fortress")
 	_state_chart.send_event("to_despawning")
 
 func _on_despawning_state_entered() -> void:

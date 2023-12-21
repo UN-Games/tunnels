@@ -157,8 +157,6 @@ func _randi_z_orientation () -> int:
 	var z_orientation = [0, 1, 2, 3]
 	return z_orientation[randi() % 4]
 
-
-
 func get_obstacles() -> Array[Vector2i]:
 	# return the walkable tiles
 	var obstacles:Array[Vector2i] = []
