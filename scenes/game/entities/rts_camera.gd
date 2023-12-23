@@ -42,7 +42,6 @@ const RAY_LENGTH = 1000
 func _ready() -> void:
 	Events.connect("camera_freeze_requested", _freeze)
 	Events.connect("camera_unfreeze_requested", _unfreeze)
-	#Events.connect("click_selection_requested", _excavate_on_click)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -197,24 +196,3 @@ func _freeze() -> void:
 
 func _unfreeze() -> void:
 	_is_frozen = false
-
-# func print where th click location is
-func _excavate_on_click(ability:int = 0) -> void:
-	var ground_point = _get_ground_click_location()
-	# TODO: check if the click hit a tile using the 3 planes
-
-	# convert the 3d point to a new vector2d point omiting the y axis
-	# TODO fix the final position
-	ground_point = Vector2i(floori(ground_point.x - (ground_point.x * (camera.position.z - 1) * 0.001)), floori(ground_point.z - (ground_point.z * (camera.position.z - 1) * 0.001)))
-	# if the ability 1 is active
-	match ability:
-		1:
-			GridLevel.explode_to_position(ground_point, 7)
-		2:
-			# TODO: change hte ability to build a wall
-			Events.emit_signal("explosion_requested", ground_point, 2)
-		3:
-			# TODO: change hte ability to build a tower
-			Events.emit_signal("explosion_requested", ground_point, 2)
-		_:
-			GridLevel.remove_tiles(ground_point)

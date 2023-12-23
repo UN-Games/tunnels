@@ -12,6 +12,10 @@ var _tunnel_progress: float = 0
 var _path:Array[Vector2i]
 var _path_length: float = 0
 
+signal excavation_finished()
+
+func _ready() -> void:
+	connect("excavation_finished", _fade_out)
 
 func _process(delta: float) -> void:
 	_move_tunnel_machine(delta)
@@ -55,14 +59,18 @@ func excavate_path():
 		#_tunnel_progress += (1.0 / _path.size())
 		excavate_at_position(tile, Vector2i.ONE)
 		await get_tree().create_timer(_speed).timeout
+	emit_signal("excavation_finished")
 
 func _move_tunnel_machine(delta: float) -> void:
 	# move slightly every frame in less than the _speed time to the next tile
-
 	if _tunnel_progress >= 1:
-		# wait 2 segs and fade out mesh
-		await get_tree().create_timer(2.0).timeout
-		queue_free()
+		_path_follow_3d.progress_ratio = 1
+		return
 	else:
-		_tunnel_progress += delta / _speed * 0.085
+		_tunnel_progress += delta / _speed / _path_length *0.95
 		_path_follow_3d.progress_ratio = _tunnel_progress
+
+func _fade_out() -> void:
+	# fade out mesh after 2 secs
+	await get_tree().create_timer(2.0).timeout
+	queue_free()

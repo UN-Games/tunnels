@@ -1,8 +1,7 @@
 extends Node3D
 
-
 func generate_path_to(initial_pos: Vector2i, final_pos: Vector2i) -> Array[Vector2i]:
-    var path: Array[Vector2i]
+    var path: Array[Vector2i] = []
     var init_pos: Vector2i = initial_pos
     var fin_pos: Vector2i = final_pos
 

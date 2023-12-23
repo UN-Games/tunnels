@@ -13,22 +13,12 @@ var _max_range = 1000
 var _bullet_speed = 10
 var _initial_empty_area: Vector2i = Vector2i(5, 5)
 
-# On ready spawn the fortress
-
-
 # Preload the bullet model
 var target_lock = null
 
 # on ready call the signal of excavate
 func _ready():
-	# move half the size of the fortress to the right and down
-	position = Vector3(0.5, 1, 0.5)
-	# emit signal to excavate the area
-	#Events.emit_signal("excavation_requested", get_pos(), _initial_empty_area)
-	GridLevel.remove_tiles(get_pos(), _initial_empty_area)
-
-	# Events.emit_signal("excavation_requested", get_pos(), Vector2i(3, 3))
-	Events.emit_signal("tunnel_requested", get_pos(), Vector2i(10, 0))
+	pass
 	#GridLevel.excavate_path_to(Vector2i(0, 0), Vector2i(15,-5), 10)
 
 func _process(delta):
@@ -37,7 +27,7 @@ func _process(delta):
 		if distance > _max_range:
 			target_lock = null
 		else:
-			look_at(target_lock.position, Vector3.UP)
+			look_at(target_lock.global_position, Vector3.UP)
 			# lock rotation on the Y axis
 			rotation.x = 0
 			rotation.z = 0
@@ -60,6 +50,7 @@ func _fire():
 # function to detect the nearest enemy and lock target to it
 func _find_nearest_enemy():
 	var enemies = get_tree().get_nodes_in_group("enemies")
+	#print("Enemies: ", enemies.size())
 	var nearest_enemy = null
 	var nearest_enemy_distance = _max_range
 	for enemy in enemies:
@@ -70,5 +61,14 @@ func _find_nearest_enemy():
 			nearest_enemy_distance = distance
 	return nearest_enemy
 
+func deploy():
+	GridLevel.remove_tiles(get_pos(), _initial_empty_area)
+	Events.emit_signal("tunnel_requested", get_pos(), Vector2i(10, 0))
+
 func get_pos() -> Vector2i:
 	return Vector2i(floori(global_position.x), floori(global_position.z))
+
+func set_pos(pos: Vector2i):
+	global_position.x = pos.x + 0.5
+	global_position.z = pos.y + 0.5
+	global_position.y = 1

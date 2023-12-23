@@ -18,8 +18,8 @@ config/icon="res://assets/icons/icon.svg"
 [autoload]
 
 Events="*res://global/autoloads/events.gd"
-GridLevel="*res://global/autoloads/grid_level.gd"
 PathGenerator="*res://global/autoloads/path_generator.gd"
+GridLevel="*res://global/autoloads/grid_level.tscn"
 
 [display]
 
@@ -146,6 +146,6 @@ reload={
 
 [rendering]
 
-renderer/rendering_method="gl_compatibility"
+renderer/rendering_method="mobile"
 renderer/rendering_method.mobile="gl_compatibility"
 environment/defaults/default_clear_color=Color(0.0046, 0.01076, 0.02, 1)

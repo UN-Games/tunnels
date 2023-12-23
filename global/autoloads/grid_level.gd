@@ -1,145 +1,163 @@
 extends Node3D
 
+@export var mines: PackedScene = null
+
+var is_bugged:bool = false # Debug
+
 var _grid_map: GridMap
 # Bidimentional array of bools to store the level walkable tiles
-#var _walkable_bm:BitMap = BitMap.new()
-var _walkable_dict:Dictionary = Dictionary()
+var _walkable_bm:BitMap = BitMap.new()
+
+var _mines_bm:BitMap = BitMap.new()
+var _size: Vector2i
 
 func _ready():
 	# set the scale of tiles to 0.5
-	_grid_map = GridMap.new()
-	_grid_map.cell_size = Vector3(1,0.9,1)
-	add_child(_grid_map)
+	_create_grid_map(Vector3(1, 0.9, 1))
 
 # func to generate level items
 func generate_level(mesh_lib:MeshLibrary, pos: Vector2i = Vector2i(0, 0), size: Vector2i = Vector2i(0, 0)) -> void:
+	_size = size
 	_grid_map.mesh_library = mesh_lib
-	_spawn_walkable(size)
-	#_spawn_floor(pos, size, 0, 0, 0)
-	_spawn_dungeon(pos, size, 0, 1)
+	#_spawn_walkable()
+	_spawn_dungeon(pos, 0, 1)
+	_walkable_bm.create(_size)
+	_mines_bm.create(_size)
 
-func _spawn_walkable (size: Vector2i = Vector2i()) -> void:
-	#_walkable_bm.create(size)
-	_populate_dict(size)
+func _create_grid_map (cell_size: Vector3 = Vector3(1, 1, 1)) -> void:
+	if _grid_map != null:
+		_grid_map.clear()
+	_grid_map = GridMap.new()
+	_grid_map.cell_size = cell_size
+	add_child(_grid_map)
 
-func _spawn_floor (pos: Vector2i = Vector2i(), size: Vector2i = Vector2i() ,  flr: int = 0, item:int = 0, item2: int = 0) -> void:
-	# Spawn a floor of size x size at the given position minus half the size
-	# set a random floor tile between item and item2 more probable to be item 66%
-	# choose a random rotation int beetween 0, 10, 16 and 22
-	var cell_pos: Vector2i
-	for x in range(size.x):
-		for y in range(size.y):
-			cell_pos = Vector2i(x - int (size.x *0.5) + pos.x, y - int (size.y * 0.5) + pos.y)
+func spawn_mines (prob: int = 10) -> void:
+	for x in range(_size.x):
+		for y in range(_size.y):
+			if (randi() % 100) < prob:
+				# if there is no floor tile at the position spawn a mine
+				if get_item(x, y) != 0:
+					_mines_bm.set_bit(x, y, true)
+
+func _spawn_floor (x_pos: int, y_pos: int, radius: Vector2i = Vector2i() ,  flr: int = 0, item:int = 0, item2: int = 0) -> void:
+	for x in range(radius.x):
+		for y in range(radius.y):
 			# if the item is a floor tile (0) do nothing
-			if get_item(cell_pos) == 0 or get_item(cell_pos) == 0:
-				# set to true the walkable array
+			if get_item(x + x_pos, y + y_pos) == 0:
 				continue
 			if (randi() % 100) < 33:
-				set_item(cell_pos, item, flr, _randi_y_orientation())
+				set_item(x + x_pos, y + y_pos, item, flr, _randi_y_orientation())
 			else:
-				set_item(cell_pos, item2, flr, _randi_y_orientation())
+				set_item(x + x_pos, y + y_pos, item2, flr, _randi_y_orientation())
 
-func _spawn_dungeon (pos: Vector2i = Vector2i(), size: Vector2i = Vector2i(), flr: int = 0, item:int = 1) -> void:
-	# Spawn a dungeon of size x size at the given position minus half the size
+func _spawn_dungeon (pos: Vector2i = Vector2i(), flr: int = 0, item:int = 1) -> void:
 	var previous_floor:bool = false
 	var previous_ceil:bool = false
-	for x in range(size.x):
-		for y in range(size.y):
-			# The spawn has a 95% chance of spawning a dungeon tile on the first floor
-			# If it spawns a dungeon tile, it has a 5% chance of spawning a dungeon tile on the second floor
-			# if it doesnt spawn the next spawn has 80% chance of spawning a dungeon tile on the first floor
+	for x in range(_size.x):
+		for y in range(_size.y):
 			var prob = 100
 			if previous_floor:
 				prob = 85
 				# choose a random position near x,y (x-1, x+1, y-1, y+1) and spawn a floor tile
 				var rand_x = randi() % 3 - 1
 				var rand_y = randi() % 3 - 1
-				_spawn_floor(Vector2i(x - int (size.x *0.5) + pos.x + rand_x, y - int (size.y * 0.5) + pos.y + rand_y), Vector2i.ONE, flr)
+				_spawn_floor(x + pos.x + rand_x, y  + pos.y + rand_y, Vector2i.ONE, flr)
 			if (randi() % 100) < prob:
 				previous_floor = false
-				set_item(Vector2i(x - int (size.x *0.5) + pos.x, y - int (size.y * 0.5) + pos.y), item, flr)
+				set_item(x  + pos.x, y + pos.y, item, flr)
 				var ceil_prob = 0
 				if previous_ceil:
 					ceil_prob = 10
 				if (randi() % 100) < ceil_prob:
 					previous_ceil = true
-					set_item(Vector2i(x - int (size.x *0.5) + pos.x, y - int (size.y * 0.5) + pos.y), item, flr + 1)
+					set_item(x + pos.x, y + pos.y, item, flr + 1)
 				else:
 					previous_ceil = false
 			else:
-				# spawn a random floor tile
-				_spawn_floor(Vector2i(x - int (size.x *0.5) + pos.x, y - int (size.y * 0.5) + pos.y), Vector2i.ONE, flr)
+				_spawn_floor(x + pos.x, y + pos.y, Vector2i.ONE, flr)
 				previous_floor = true
 				previous_ceil = false
 
-func remove_tiles (pos: Vector2i = Vector2i(), size: Vector2i = Vector2i.ONE, flr: int = 0, flr_mnt: int = 1) -> void:
+func remove_tiles (pos: Vector2i, radius: Vector2i = Vector2i.ONE, flr: int = 0, flr_mnt: int = 1) -> void:
 	# Remove a floor of size x size at the given position minus half the size
-	var cell_pos: Vector2i
-	for x in range(size.x):
-		for y in range(size.y):
-			for z in range(flr_mnt):
-				# get the position of the cell
-				cell_pos = Vector2i(x - int (size.x *0.5) + pos.x, y - int (size.y * 0.5) + pos.y)
-				# if the item is a floor tile do nothing
-				if get_item(cell_pos) == 0 or get_item(cell_pos) == 0:
+	for x in radius.x:
+		for y in radius.y:
+			for z in flr_mnt:
+				if get_item(x + pos.x - floori(radius.x * 0.5), y + pos.y - floori(radius.y * 0.5)) == 0:
 					continue
 				else:
-					if flr == 0:
-						set_item(cell_pos, 0, flr + z)
+					if z == 0:
+						set_item(x + pos.x - floori(radius.x * 0.5), y + pos.y - floori(radius.y * 0.5), 0, flr + z)
 					else:
-						set_item(cell_pos, -1, flr + z)
+						set_item(x + pos.x - floori(radius.x * 0.5), y + pos.y - floori(radius.y * 0.5), -1, flr + z)
 
-func explode_to_position (pos: Vector2i = Vector2i(), size: int = 3) -> void:
-	# remove the floor at the given position in a radius of size the first 9 tiles around
-	# are removed, then the surrounding 16 have a 66% chance of being removed
-	# finally the surrounding 24 have a 33% chance of being removed
-	var cell_pos: Vector2i
-	var half_size = int (size * 0.5)
+func explode_to_position (pos: Vector2i, radius: Vector2i = Vector2i.ONE) -> void:
+	# TODO: Move the explosion logic to the bomb class
+	var half_size: Vector2i = Vector2i(floori(radius.x * 0.5), floori(radius.y * 0.5))
 	var boom_prob = 20
-	for x in range(size):
-		for y in range(size):
-			# get the position of the cell
-			cell_pos = Vector2i(x - int (half_size) + pos.x, y - int (half_size) + pos.y)
-			# if the item is a floor tile (0) do nothing
-			if get_item(cell_pos) == 0 or get_item(cell_pos) == 0:
+	var cell_pos: Vector2i = Vector2i()
+	var rad_pos: Vector2i = Vector2i()
+	#remove_tiles(pos, radius)
+	for x in radius.x:
+		for y in radius.y:
+			rad_pos = Vector2i(x - half_size.x, y - half_size.y)
+			cell_pos = rad_pos + pos
+			if get_item(cell_pos.x, cell_pos.y) == 0:
 				# increase the probability of spawning a floor tile
 				boom_prob += 4
 				continue
 			# if the cell is in the first 9 surrounding tiles remove it
-			if x < (half_size) + 1 and x > (half_size) -1 and y < (half_size) + 1 and y > (half_size) -1:
-				# clear all the floors
-				remove_tiles(cell_pos, Vector2i.ONE, 0, 6)
-				_spawn_floor(cell_pos, Vector2i.ONE, 0)
-			elif x < (half_size) + 2 and x > (half_size) -2 and y < (half_size) + 2 and y > (half_size) -2:
-				remove_tiles(cell_pos, Vector2i.ONE, 0, 6)
-				_spawn_floor(cell_pos, Vector2i.ONE, 0)
+			if abs(rad_pos.x) < 1 and abs(rad_pos.y) < 1:
+				remove_tiles(cell_pos, Vector2i.ONE)
+			elif abs(rad_pos.x) < 2 and abs(rad_pos.y) < 2:
+				remove_tiles(cell_pos, Vector2i.ONE)
 			# if the cell is in the surrounding 16 tiles remove it with a 66% chance
-			elif x < (half_size) + 3 and x > (half_size) -3 and y < (half_size) + 3 and y > (half_size) -3:
-				if (randi() % 100) < 80 + boom_prob:
-					remove_tiles(cell_pos, Vector2i.ONE, 0, 6)
-					_spawn_floor(cell_pos, Vector2i.ONE, 0)
+			elif abs(rad_pos.x) < 3 and abs(rad_pos.y) < 3:
+				if (randi() % 100) < 60 + boom_prob:
+					remove_tiles(cell_pos, Vector2i.ONE)
 			# if the cell is in the surrounding 24 tiles remove it with a 33% chance
-			elif x < 7 and y < 7:
-				if (randi() % 100) < boom_prob:
-					_spawn_floor(cell_pos, Vector2i.ONE, 0)
+			#elif x < 7 and y < 7:
+			#	if (randi() % 100) < boom_prob:
+			#		_spawn_floor(x_pos, y_pos, Vector2i.ONE, 0)
+
+func reveal_to_position (pos: Vector2i, radius: Vector2i = Vector2i.ONE) -> Array[Vector2i]:
+
+	var half_size: Vector2i = Vector2i(floori(radius.x * 0.5), floori(radius.y * 0.5))
+	var cell_pos: Vector2i = Vector2i()
+	var rad_pos: Vector2i = Vector2i()
+	var revealed:Array[Vector2i] = []
+	#reveal the mine tiles around the position
+	for x in radius.x:
+		for y in radius.y:
+			rad_pos = Vector2i(x - half_size.x, y - half_size.y)
+			cell_pos = rad_pos + pos
+			# if the tile is a wall tile (not walkable) and there is a mine at the position
+			if !_walkable_bm.get_bit(cell_pos.x, cell_pos.y) and _mines_bm.get_bit(cell_pos.x, cell_pos.y):
+				revealed.append(cell_pos)
+	# delete the reve
+	return revealed
+
+func is_tile_empty (pos: Vector2i) -> bool:
+	return _walkable_bm.get_bit(pos.x, pos.y)
 
 func get_grid_map() -> GridMap:
 	return _grid_map
 
-# wrappers for the _grid_map functions
-func get_item(pos: Vector2i) -> int:
-	return _grid_map.get_cell_item(Vector3i(pos.x, 0, pos.y))
+func get_item(x_pos: int, y_pos) -> int:
+	return _grid_map.get_cell_item(Vector3i(x_pos, 0, y_pos))
 
-# set new vector3i with the floor at 0
-func set_item(pos: Vector2i, item: int, flr:int = 0, orientation: int = 0) -> void:
+func set_item(x_pos: int, y_pos, item: int, flr:int = 0, orientation: int = 0) -> void:
 	if item == 0:
-		# replace value in the dictionary
-		_walkable_dict[pos] = true
-		#_walkable_bm.set_bitv(pos, true)
+		_walkable_bm.set_bit(x_pos, y_pos, true)
+		# check if there is a mine at the position
+		if _mines_bm.get_bit(x_pos, y_pos):
+			# spawn a mine
+			var mine = mines.instantiate()
+			mine.position = Vector3(x_pos + 0.5, flr + 0.5, y_pos + 0.5)
+			add_child(mine)
 	else:
-		_walkable_dict[pos] = false
-		#_walkable_bm.set_bitv(pos, false)
-	_grid_map.set_cell_item(Vector3i(pos.x, flr, pos.y), item, orientation)
+		_walkable_bm.set_bit(x_pos, y_pos, false)
+	_grid_map.set_cell_item(Vector3i(x_pos, flr, y_pos), item, orientation)
 
 # items random rotation helpers
 func _randi_y_orientation () -> int:
@@ -157,17 +175,29 @@ func _randi_z_orientation () -> int:
 	var z_orientation = [0, 1, 2, 3]
 	return z_orientation[randi() % 4]
 
-func get_obstacles() -> Array[Vector2i]:
-	# return the walkable tiles
+func get_obstacles_in_region(pos: Vector2i, size: Vector2i) -> Array[Vector2i]:
+
 	var obstacles:Array[Vector2i] = []
-	# Get all the keys of the dictionary where the value is true
-	for key in _walkable_dict.keys():
-		if !_walkable_dict[key]:
-			obstacles.append(key)
+
+	for i in size.x:
+		for j in size.y:
+			if !_walkable_bm.get_bit(i + pos.x, j + pos.y):
+				obstacles.append(Vector2i(i + pos.x, j + pos.y))
+				# spawn debug cube
+				#if is_bugged:
+				#	var mesh_instance = MeshInstance3D.new()
+				#	mesh_instance.mesh = BoxMesh.new()
+				#	add_child(mesh_instance)
+				#	mesh_instance.scale = Vector3(0.5, 0.5, 0.5)
+				#	mesh_instance.position = Vector3(i + pos.x + 0.5, 1.5, j + pos.y + 0.5)
+
+			#if !_walkable_grid[i + pos.x][j + pos.y]:
+				#obstacles.append(Vector2i(i + pos.x, j + pos.y))
 	return obstacles
 
-func _populate_dict(size: Vector2i = Vector2i()):
-	# populate the dictionary with the walkable tiles
-	for x in range(size.x):
-		for y in range(size.y):
-			_walkable_dict[Vector2i(x - int (size.x *0.5), y - int (size.y * 0.5))] = false
+func spawn_mine(pos: Vector2i, ) -> void:
+	_mines_bm.set_bit(pos.x, pos.y, true)
+	set_item(pos.x, pos.y, 0, 0, 0)
+	var mine = mines.instantiate()
+	mine.position = Vector3(pos.x + 0.5, 0.5, pos.y + 0.5)
+	add_child(mine)

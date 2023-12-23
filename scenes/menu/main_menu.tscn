@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://c7dmqa4dbds8"]
+[gd_scene load_steps=3 format=3 uid="uid://c7dmqa4dbds8"]
 
 [ext_resource type="Script" path="res://scenes/menu/main_menu.gd" id="1_oa0tr"]
+[ext_resource type="Texture2D" uid="uid://b52twu2d0x7kb" path="res://assets/icons/tst7.jpg" id="2_sgf4v"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -11,36 +12,48 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_oa0tr")
 
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -540.0
+offset_right = 1080.0
+offset_bottom = 540.0
+grow_vertical = 2
+texture = ExtResource("2_sgf4v")
+
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
+anchors_preset = 6
+anchor_left = 1.0
 anchor_top = 0.5
-anchor_right = 0.5
+anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = -250.0
-offset_top = -153.5
-offset_right = 250.0
-offset_bottom = 153.5
-grow_horizontal = 2
+offset_left = -690.0
+offset_top = -153.0
+offset_right = -140.0
+offset_bottom = 154.0
+grow_horizontal = 0
 grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
+size_flags_vertical = 0
 
 [node name="Play" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 focus_neighbor_left = NodePath("../Quit")
 focus_neighbor_top = NodePath("../Quit")
 focus_neighbor_right = NodePath("../Options")
-theme_override_font_sizes/font_size = 100
+theme_override_font_sizes/font_size = 150
 text = "Play"
 
 [node name="Options" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 focus_neighbor_left = NodePath("../Play")
 focus_neighbor_right = NodePath("../Quit")
-theme_override_font_sizes/font_size = 50
+theme_override_font_sizes/font_size = 75
 text = "Options"
 
 [node name="Quit" type="Button" parent="MarginContainer/VBoxContainer"]
@@ -48,7 +61,7 @@ layout_mode = 2
 focus_neighbor_left = NodePath("../Options")
 focus_neighbor_right = NodePath("../Play")
 focus_neighbor_bottom = NodePath("../Play")
-theme_override_font_sizes/font_size = 50
+theme_override_font_sizes/font_size = 75
 text = "Quit
 "
 

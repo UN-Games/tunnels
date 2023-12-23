@@ -164,7 +164,7 @@ _data = {
 [sub_resource type="BoxShape3D" id="BoxShape3D_aqq5e"]
 size = Vector3(1, 0.2, 1)
 
-[node name="Spawner" type="Node3D"]
+[node name="Spawner" type="Area3D" groups=["spawner"]]
 unique_name_in_owner = true
 script = ExtResource("1_8o8d1")
 enemy = ExtResource("2_h5qh6")
@@ -188,9 +188,7 @@ libraries = {
 }
 autoplay = "spawn"
 
-[node name="Area3D" type="Area3D" parent="." groups=["spawner"]]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
 shape = SubResource("BoxShape3D_aqq5e")
 

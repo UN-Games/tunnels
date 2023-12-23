@@ -1,10 +1,13 @@
 extends Node3D
 
 @export_range(0, 100) var _coins: int = 20
+@export var map_size: Vector2i = Vector2i(50,50)
 @export var _mesh_lib: MeshLibrary = null
 @export var spawner: PackedScene = null
 @export var fortress: PackedScene = null
 @export var excavator: PackedScene = null
+# export a list of tools/powerups that can be used.
+@export var _tools: Array[PackedScene] = []
 
 @onready var _coins_label: Label = %Control/CanvasLayer/Coins
 @onready var _rts_camera: RTSCamera = %RTSCamera
@@ -14,9 +17,11 @@ extends Node3D
 var _ability: int = 0
 var _initial_coins_label_text: String = ""
 var _fortress: Fortress
-var _lifes: int = 10
+var _lifes: int = 100
+var _center: Vector2i = map_size * 0.5
 
 const RAYCAST_LENGTH = 1000
+const GROUND_PLANE_0 = Plane(Vector3.UP, Vector3(0, 0, 0))
 
 # On enter the scene tree.
 func _enter_tree() -> void:
@@ -26,22 +31,30 @@ func _enter_tree() -> void:
 	Events.connect("enemy_reached_fortress", _on_enemy_reached_fortress)
 
 func _ready() -> void:
-
 	# Instantiate the level1 scene.
-	GridLevel.generate_level(_mesh_lib, Vector2i(), Vector2i(50,50))
+	GridLevel.generate_level(_mesh_lib, Vector2i(), map_size)
+	_rts_camera.position = Vector3(map_size.x * 0.5, 0, map_size.y * 0.5 + 5) # TODO: Fix the camera start position (flickering).
 
 	_fortress = fortress.instantiate()
 	add_child(_fortress)
-
-	_pop_spawning_point(Vector2i(-10,randi_range(-10,0)), 20, 1, 0.2) # TODO: Fix bug when Y is > 0.
+	_fortress.set_pos(_center)
+	_fortress.deploy()
 
 	_initial_coins_label_text = _coins_label.text
+	_pop_spawning_point(Vector2i(randi_range(_center.x - 10, _center.x -5), randi_range(_center.y - 10, _center.y -5)), 20, 0.5, 0.2)
+	_pop_spawning_point(Vector2i(randi_range(_center.x + 10, _center.x + 5), randi_range(_center.y - 10, _center.y + -5)), 20, 0.5, 0.2)
+	_pop_spawning_point(Vector2i(randi_range(_center.x - 10, _center.x -5), randi_range(_center.y + 10, _center.y + 5)), 20, 0.5, 0.2)
+	_pop_spawning_point(Vector2i(randi_range(_center.x - 15, _center.x), randi_range(_center.y + 1, _center.y - 1)), 20, 0.5, 0.2)
+	await _pop_spawning_point(Vector2i(randi_range(_center.x + 10, _center.x + 5), randi_range(_center.y + 10, _center.y + 5)), 20, 0.5, 0.2)
+	GridLevel.spawn_mines(5)
 	#await _excavate_path_to(Vector2i(0,0), Vector2i(10,0), 0.1)
 
 func _process(delta: float) -> void:
 	_coins_label.text = _initial_coins_label_text + str(_coins)
 
 func _physics_process(delta: float) -> void:
+
+	# on left click.
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		var space_state = get_world_3d().direct_space_state
 		var mouse_pos:Vector2 = get_viewport().get_mouse_position()
@@ -57,13 +70,30 @@ func _physics_process(delta: float) -> void:
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("select"):
-		# the ability 1 cost 10 coins to be used.
-		if _ability == 1 and _coins >= 10:
-			_coins -= 10
-			_rts_camera._excavate_on_click(_ability)
+		var ground_point = _get_ground_click_location(_rts_camera.camera)
+		# check if the tile is empty.
+		if !GridLevel.is_tile_empty(ground_point):
+			return
+		match _ability:
+			1:
+				if _coins < 10:
+					return
+				_coins -= 10
+				GridLevel.explode_to_position(ground_point, Vector2i(5, 5))
+			2:
+				# spawn a radar (second _tool)
+				if _coins < 10:
+					return
+				_coins -= 10
+				var radar = _tools[1].instantiate()
+				add_child(radar)
+				radar.setup(ground_point, Vector2i(7, 7))
+				radar.reveal()
 
-		else:
-			_rts_camera._excavate_on_click(0)
+			3:
+				pass
+			_:
+				GridLevel.remove_tiles(ground_point)
 
 	if event.is_action_pressed("ability_1"):
 		_ability = 1
@@ -78,7 +108,7 @@ func _input(event: InputEvent) -> void:
 
 func _pop_spawning_point(pos: Vector2i, amount: int = 10, rate: float = 2, speed: float = 2) -> void:
 	# clear a small area around the spawning point. explosion of radius 3.
-	GridLevel.explode_to_position(pos, 3)
+
 	# create a path pointing the fortress.
 	var excavator_inst = excavator.instantiate()
 	add_child(excavator_inst)
@@ -86,10 +116,10 @@ func _pop_spawning_point(pos: Vector2i, amount: int = 10, rate: float = 2, speed
 
 	var spawner_inst = spawner.instantiate()
 	add_child(spawner_inst)
-	spawner_inst.position = Vector3(pos.x + 0.5, 0.5, pos.y + 0.5)
+	spawner_inst.setup(pos, _fortress.get_pos(), amount, rate)
 	await excavator_inst.excavate_path()
 	# set the position of the spawner.
-	spawner_inst.spawn_enemies(_fortress.get_pos(), amount, rate)
+	spawner_inst.spawn_enemies()
 
 func _on_excavation_requested(pos: Vector2i, size: Vector2i) -> void:
 	# instantiate an excavator.
@@ -101,13 +131,24 @@ func _on_excavation_requested(pos: Vector2i, size: Vector2i) -> void:
 func _on_tunnel_requested(start: Vector2i, end: Vector2i) -> void:
 	var excavator_inst: Excavator = excavator.instantiate()
 	add_child(excavator_inst)
-	excavator_inst.setup(start, end, 0.1)
+	excavator_inst.setup(start, start + end, 0.5)
 	excavator_inst.excavate_path()
 
 func _on_enemy_reached_fortress() -> void:
-	if _lifes <= 0:
-		await get_tree().create_timer(2).timeout
-		get_tree().reload_current_scene()
-		return
 	_lifes -= 1
 	Events.emit_signal("lifes_changed", _lifes)
+	if _lifes <= 0:
+		await get_tree().create_timer(2).timeout
+		print("Game Over")
+		get_tree().reload_current_scene()
+		return
+
+func _get_ground_click_location(camera: Camera3D) -> Vector2i:
+	var mouse_pos = get_viewport().get_mouse_position()
+	var ray_from = camera.project_ray_origin(mouse_pos)
+	var ray_to = ray_from + camera.project_ray_normal(mouse_pos) * RAYCAST_LENGTH
+	var intersect = GROUND_PLANE_0.intersects_ray(ray_from, ray_to)
+	# TODO: check if the click hit a tile using the 3 planes
+	# TODO fix the final position
+	return Vector2i(floori(intersect.x - (intersect.x * (camera.position.z - 1) * 0.001)),
+		floori(intersect.z - (intersect.z * (camera.position.z - 1) * 0.001)))

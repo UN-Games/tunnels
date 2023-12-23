@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://bscfetaa72ebu"]
+
+[ext_resource type="Script" path="res://global/autoloads/grid_level.gd" id="1_53gep"]
+[ext_resource type="PackedScene" uid="uid://qyligvdoxfro" path="res://scenes/game/entities/mine.tscn" id="2_jdpib"]
+
+[node name="GridLevel" type="Node3D"]
+script = ExtResource("1_53gep")
+mines = ExtResource("2_jdpib")
