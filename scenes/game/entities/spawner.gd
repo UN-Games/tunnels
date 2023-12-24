@@ -1,4 +1,4 @@
-extends Node3D
+extends Area3D
 class_name Spawner
 
 @export var enemy: PackedScene = null
@@ -21,15 +21,14 @@ func setup(pos: Vector2i, target: Vector2i, amount: int, rate: float) -> void:
 	_target = target
 	_amount = amount
 	_rate = rate
-
-	#GridLevel.remove_tiles(Vector2i(floori(global_position.x), floori(global_position.z)), Vector2i(3,3))
+	# remove the floor from the grid.
 	GridLevel.explode_to_position(Vector2i(floori(global_position.x), floori(global_position.z)), Vector2i(3,3))
+	#GridLevel.place_item(pos)
 
 func set_pos(pos: Vector3) -> void:
 	_mesh.position = pos
 
 func spawn_enemies() -> void:
-
 	for i in _amount:
 		var enemy_inst: Enemy = enemy.instantiate()
 		get_parent().add_child(enemy_inst)

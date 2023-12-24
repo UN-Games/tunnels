@@ -1,4 +1,4 @@
-extends Node3D
+extends Node
 
 func generate_path_to(initial_pos: Vector2i, final_pos: Vector2i) -> Array[Vector2i]:
     var path: Array[Vector2i] = []

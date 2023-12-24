@@ -33,6 +33,7 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	# Instantiate the level1 scene.
 	GridLevel.generate_level(_mesh_lib, Vector2i(), map_size)
+	EconomyManager.set_gold(_coins)
 	_rts_camera.position = Vector3(map_size.x * 0.5, 0, map_size.y * 0.5 + 5) # TODO: Fix the camera start position (flickering).
 
 	_fortress = fortress.instantiate()
@@ -41,50 +42,41 @@ func _ready() -> void:
 	_fortress.deploy()
 
 	_initial_coins_label_text = _coins_label.text
-	_pop_spawning_point(Vector2i(randi_range(_center.x - 10, _center.x -5), randi_range(_center.y - 10, _center.y -5)), 20, 0.5, 0.2)
-	_pop_spawning_point(Vector2i(randi_range(_center.x + 10, _center.x + 5), randi_range(_center.y - 10, _center.y + -5)), 20, 0.5, 0.2)
-	_pop_spawning_point(Vector2i(randi_range(_center.x - 10, _center.x -5), randi_range(_center.y + 10, _center.y + 5)), 20, 0.5, 0.2)
-	_pop_spawning_point(Vector2i(randi_range(_center.x - 15, _center.x), randi_range(_center.y + 1, _center.y - 1)), 20, 0.5, 0.2)
+	#_pop_spawning_point(Vector2i(randi_range(_center.x - 10, _center.x -5), randi_range(_center.y - 10, _center.y -5)), 19, 0.5, 0.2)
+	#_pop_spawning_point(Vector2i(randi_range(_center.x + 10, _center.x + 5), randi_range(_center.y - 10, _center.y + -5)), 20, 0.5, 0.2)
+	#_pop_spawning_point(Vector2i(randi_range(_center.x - 10, _center.x -5), randi_range(_center.y + 10, _center.y + 5)), 20, 0.5, 0.2)
+	#_pop_spawning_point(Vector2i(randi_range(_center.x - 15, _center.x), randi_range(_center.y + 1, _center.y - 1)), 20, 0.5, 0.2)
 	await _pop_spawning_point(Vector2i(randi_range(_center.x + 10, _center.x + 5), randi_range(_center.y + 10, _center.y + 5)), 20, 0.5, 0.2)
 	GridLevel.spawn_mines(5)
 	#await _excavate_path_to(Vector2i(0,0), Vector2i(10,0), 0.1)
 
 func _process(delta: float) -> void:
-	_coins_label.text = _initial_coins_label_text + str(_coins)
+	_coins_label.text = _initial_coins_label_text + str(EconomyManager.get_gold())
 
 func _physics_process(delta: float) -> void:
 
 	# on left click.
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-		var space_state = get_world_3d().direct_space_state
-		var mouse_pos:Vector2 = get_viewport().get_mouse_position()
-		var origin:Vector3 = _rts_camera.camera.project_ray_origin(mouse_pos)
-		var end:Vector3 = origin + _rts_camera.camera.project_ray_normal(mouse_pos) * RAYCAST_LENGTH
-		var query = PhysicsRayQueryParameters3D.create(origin, end)
-		query.collide_with_areas = true
-		var rayResult:Dictionary = space_state.intersect_ray(query)
-		if rayResult.size() > 0:
-			print(rayResult)
-			var co:CollisionObject3D = rayResult.get("collider")
-			print(co.get_groups())
+		var ray_result = _raycast()
+		if ray_result.size() > 0:
+			var co:CollisionObject3D = ray_result.get("collider")
+			#print(co.get_groups())
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("select"):
-		var ground_point = _get_ground_click_location(_rts_camera.camera)
+		var ground_point = _get_ground_click_location()
 		# check if the tile is empty.
 		if !GridLevel.is_tile_empty(ground_point):
 			return
 		match _ability:
 			1:
-				if _coins < 10:
+				if EconomyManager.spend_gold(10) == false:
 					return
-				_coins -= 10
 				GridLevel.explode_to_position(ground_point, Vector2i(5, 5))
 			2:
 				# spawn a radar (second _tool)
-				if _coins < 10:
+				if EconomyManager.spend_gold(10) == false:
 					return
-				_coins -= 10
 				var radar = _tools[1].instantiate()
 				add_child(radar)
 				radar.setup(ground_point, Vector2i(7, 7))
@@ -117,9 +109,20 @@ func _pop_spawning_point(pos: Vector2i, amount: int = 10, rate: float = 2, speed
 	var spawner_inst = spawner.instantiate()
 	add_child(spawner_inst)
 	spawner_inst.setup(pos, _fortress.get_pos(), amount, rate)
+
 	await excavator_inst.excavate_path()
 	# set the position of the spawner.
 	spawner_inst.spawn_enemies()
+
+func _raycast() -> Dictionary:
+	var cam = get_viewport().get_camera_3d()
+	var space_state = get_world_3d().direct_space_state
+	var mouse_pos:Vector2 = get_viewport().get_mouse_position()
+	var origin:Vector3 = cam.project_ray_origin(mouse_pos)
+	var end:Vector3 = origin + cam.project_ray_normal(mouse_pos) * RAYCAST_LENGTH
+	var query = PhysicsRayQueryParameters3D.create(origin, end)
+	query.collide_with_areas = true
+	return space_state.intersect_ray(query)
 
 func _on_excavation_requested(pos: Vector2i, size: Vector2i) -> void:
 	# instantiate an excavator.
@@ -143,12 +146,13 @@ func _on_enemy_reached_fortress() -> void:
 		get_tree().reload_current_scene()
 		return
 
-func _get_ground_click_location(camera: Camera3D) -> Vector2i:
+func _get_ground_click_location() -> Vector2i:
+	var cam = get_viewport().get_camera_3d()
 	var mouse_pos = get_viewport().get_mouse_position()
-	var ray_from = camera.project_ray_origin(mouse_pos)
-	var ray_to = ray_from + camera.project_ray_normal(mouse_pos) * RAYCAST_LENGTH
+	var ray_from = cam.project_ray_origin(mouse_pos)
+	var ray_to = ray_from + cam.project_ray_normal(mouse_pos) * RAYCAST_LENGTH
 	var intersect = GROUND_PLANE_0.intersects_ray(ray_from, ray_to)
 	# TODO: check if the click hit a tile using the 3 planes
 	# TODO fix the final position
-	return Vector2i(floori(intersect.x - (intersect.x * (camera.position.z - 1) * 0.001)),
-		floori(intersect.z - (intersect.z * (camera.position.z - 1) * 0.001)))
+	return Vector2i(floori(intersect.x - (intersect.x * (cam.position.z - 1) * 0.001)),
+		floori(intersect.z - (intersect.z * (cam.position.z - 1) * 0.001)))

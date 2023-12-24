@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://c1jo6eewye6cm"]
+
+[ext_resource type="Script" path="res://scenes/game/ui/activity_button.gd" id="1_8428j"]
+
+[node name="ActivityButton" type="Button"]
+custom_minimum_size = Vector2(96, 96)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_icon = true
+script = ExtResource("1_8428j")
+
+[connection signal="button_down" from="." to="." method="_on_button_down"]
+[connection signal="button_up" from="." to="." method="_on_button_up"]

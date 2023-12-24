@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://ckfoiymgajttt"]
+[gd_scene load_steps=14 format=3 uid="uid://ckfoiymgajttt"]
 
 [ext_resource type="Script" path="res://scenes/game/game_world.gd" id="1_78whg"]
 [ext_resource type="MeshLibrary" uid="uid://wrjlopkwmtv4" path="res://assets/generate_path.tres" id="2_833ox"]
@@ -9,6 +9,10 @@
 [ext_resource type="PackedScene" uid="uid://by0qb252va8y3" path="res://scenes/game/entities/bomb.tscn" id="6_m5dhy"]
 [ext_resource type="Script" path="res://scenes/game/life_counter.gd" id="7_83r8l"]
 [ext_resource type="PackedScene" uid="uid://g4m8e6sv0aae" path="res://scenes/game/entities/radar.tscn" id="7_fccgl"]
+[ext_resource type="PackedScene" uid="uid://c1jo6eewye6cm" path="res://scenes/game/ui/activity_button.tscn" id="10_48vtl"]
+[ext_resource type="Texture2D" uid="uid://cnkr1weld3pat" path="res://assets/icons/turret.png" id="11_gcxko"]
+[ext_resource type="PackedScene" uid="uid://c1hxtgptv0377" path="res://scenes/game/entities/turret.tscn" id="12_p4y2u"]
+[ext_resource type="Material" uid="uid://clupeys1hy1ka" path="res://assets/materials/red_transparent.material" id="13_vl8pe"]
 
 [node name="GameWorld" type="Node3D"]
 script = ExtResource("1_78whg")
@@ -87,3 +91,18 @@ theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 100
 text = "Lifes: 100"
 script = ExtResource("7_83r8l")
+
+[node name="ActivityButton" parent="Control/CanvasLayer" instance=ExtResource("10_48vtl")]
+custom_minimum_size = Vector2(128, 128)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+offset_left = -48.0
+offset_top = -104.0
+offset_right = 48.0
+offset_bottom = -8.0
+grow_vertical = 0
+activity_icon = ExtResource("11_gcxko")
+activity_draggable = ExtResource("12_p4y2u")
+error_mat = ExtResource("13_vl8pe")

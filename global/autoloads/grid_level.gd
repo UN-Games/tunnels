@@ -1,14 +1,14 @@
 extends Node3D
 
+@export var empty: PackedScene = null
 @export var mines: PackedScene = null
 
 var is_bugged:bool = false # Debug
 
 var _grid_map: GridMap
-# Bidimentional array of bools to store the level walkable tiles
 var _walkable_bm:BitMap = BitMap.new()
-
 var _mines_bm:BitMap = BitMap.new()
+var _empty_dict:Dictionary = {}
 var _size: Vector2i
 
 func _ready():
@@ -21,6 +21,7 @@ func generate_level(mesh_lib:MeshLibrary, pos: Vector2i = Vector2i(0, 0), size: 
 	_grid_map.mesh_library = mesh_lib
 	#_spawn_walkable()
 	_spawn_dungeon(pos, 0, 1)
+	_empty_dict.clear()
 	_walkable_bm.create(_size)
 	_mines_bm.create(_size)
 
@@ -149,14 +150,25 @@ func get_item(x_pos: int, y_pos) -> int:
 func set_item(x_pos: int, y_pos, item: int, flr:int = 0, orientation: int = 0) -> void:
 	if item == 0:
 		_walkable_bm.set_bit(x_pos, y_pos, true)
-		# check if there is a mine at the position
+		if !_empty_dict.has(Vector2i(x_pos, y_pos)):
+			var empty_tile = empty.instantiate()
+			_empty_dict[Vector2i(x_pos, y_pos)] = empty_tile
+			add_child(empty_tile)
+			empty_tile.position = Vector3(x_pos + 0.5, flr + 0.5, y_pos + 0.5)
+
 		if _mines_bm.get_bit(x_pos, y_pos):
 			# spawn a mine
 			var mine = mines.instantiate()
-			mine.position = Vector3(x_pos + 0.5, flr + 0.5, y_pos + 0.5)
 			add_child(mine)
+			mine.position = Vector3(x_pos + 0.5, flr + 0.5, y_pos + 0.5)
+
 	else:
 		_walkable_bm.set_bit(x_pos, y_pos, false)
+		# remove the floor tile from the dictionary
+		if _empty_dict.has(Vector2i(x_pos, y_pos)):
+			_empty_dict[Vector2i(x_pos, y_pos)].queue_free()
+			_empty_dict.erase(Vector2i(x_pos, y_pos))
+
 	_grid_map.set_cell_item(Vector3i(x_pos, flr, y_pos), item, orientation)
 
 # items random rotation helpers
@@ -195,7 +207,7 @@ func get_obstacles_in_region(pos: Vector2i, size: Vector2i) -> Array[Vector2i]:
 				#obstacles.append(Vector2i(i + pos.x, j + pos.y))
 	return obstacles
 
-func spawn_mine(pos: Vector2i, ) -> void:
+func spawn_mine(pos: Vector2i) -> void:
 	_mines_bm.set_bit(pos.x, pos.y, true)
 	set_item(pos.x, pos.y, 0, 0, 0)
 	var mine = mines.instantiate()

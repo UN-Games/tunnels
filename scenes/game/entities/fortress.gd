@@ -9,7 +9,7 @@ class_name Fortress
 var _total_life = 10
 var _fire_rate = 0.2
 var _damage = 1
-var _max_range = 1000
+var _max_range = 10
 var _bullet_speed = 10
 var _initial_empty_area: Vector2i = Vector2i(5, 5)
 
@@ -27,10 +27,10 @@ func _process(delta):
 		if distance > _max_range:
 			target_lock = null
 		else:
-			look_at(target_lock.global_position, Vector3.UP)
+			_tower.look_at(target_lock.global_position, Vector3.UP)
 			# lock rotation on the Y axis
-			rotation.x = 0
-			rotation.z = 0
+			_tower.rotation.x = 0
+			_tower.rotation.z = 0
 			if _fire_rate > 0:
 				_fire_rate -= delta
 			else:
@@ -55,7 +55,7 @@ func _find_nearest_enemy():
 	var nearest_enemy_distance = _max_range
 	for enemy in enemies:
 		# get the %Area3D node
-		var distance = (enemy.position - global_transform.origin).length()
+		var distance = (enemy.global_position - global_transform.origin).length()
 		if distance < nearest_enemy_distance:
 			nearest_enemy = enemy
 			nearest_enemy_distance = distance

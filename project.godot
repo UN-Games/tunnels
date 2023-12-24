@@ -20,6 +20,7 @@ config/icon="res://assets/icons/icon.svg"
 Events="*res://global/autoloads/events.gd"
 PathGenerator="*res://global/autoloads/path_generator.gd"
 GridLevel="*res://global/autoloads/grid_level.tscn"
+EconomyManager="*res://global/autoloads/economy_manager.gd"
 
 [display]
 
