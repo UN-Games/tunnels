@@ -11,7 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://g4m8e6sv0aae" path="res://scenes/game/entities/radar.tscn" id="7_fccgl"]
 [ext_resource type="PackedScene" uid="uid://c1jo6eewye6cm" path="res://scenes/game/ui/activity_button.tscn" id="10_48vtl"]
 [ext_resource type="Texture2D" uid="uid://cnkr1weld3pat" path="res://assets/icons/turret.png" id="11_gcxko"]
-[ext_resource type="PackedScene" uid="uid://c1hxtgptv0377" path="res://scenes/game/entities/turret.tscn" id="12_p4y2u"]
+[ext_resource type="PackedScene" uid="uid://cu0qkevlygvdc" path="res://scenes/game/entities/gun.tscn" id="12_p4y2u"]
 [ext_resource type="Material" uid="uid://clupeys1hy1ka" path="res://assets/materials/red_transparent.material" id="13_vl8pe"]
 
 [node name="GameWorld" type="Node3D"]

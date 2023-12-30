@@ -23,7 +23,6 @@ var _center: Vector2i = map_size * 0.5
 const RAYCAST_LENGTH = 1000
 const GROUND_PLANE_0 = Plane(Vector3.UP, Vector3(0, 0, 0))
 
-# On enter the scene tree.
 func _enter_tree() -> void:
 	# Events.
 	Events.connect("excavation_requested", _on_excavation_requested)
@@ -38,8 +37,7 @@ func _ready() -> void:
 
 	_fortress = fortress.instantiate()
 	add_child(_fortress)
-	_fortress.set_pos(_center)
-	_fortress.deploy()
+	_fortress.build_at(_center, _lifes, Vector2(0.5, 0.5))
 
 	_initial_coins_label_text = _coins_label.text
 	#_pop_spawning_point(Vector2i(randi_range(_center.x - 10, _center.x -5), randi_range(_center.y - 10, _center.y -5)), 19, 0.5, 0.2)
@@ -97,6 +95,12 @@ func _input(event: InputEvent) -> void:
 	# Reload the current scene.
 	if event.is_action_pressed("reload"):
 		get_tree().reload_current_scene()
+
+	if event.is_action_pressed("speed"):
+		Engine.time_scale = 2.5
+
+	if event.is_action_released("speed"):
+		Engine.time_scale = 1
 
 func _pop_spawning_point(pos: Vector2i, amount: int = 10, rate: float = 2, speed: float = 2) -> void:
 	# clear a small area around the spawning point. explosion of radius 3.

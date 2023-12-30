@@ -1,8 +1,11 @@
-[gd_scene load_steps=10 format=3 uid="uid://4vs32l0pd8j1"]
+[gd_scene load_steps=11 format=3 uid="uid://4vs32l0pd8j1"]
 
 [ext_resource type="Script" path="res://scenes/game/entities/fortress.gd" id="1_75o7q"]
 [ext_resource type="Texture2D" uid="uid://bvvajuhr6y01j" path="res://assets/models/tunnels/tower_colormap_tunnel.png" id="2_qnpuj"]
 [ext_resource type="PackedScene" uid="uid://di1t7gkxk1vcj" path="res://scenes/game/entities/bullet.tscn" id="2_vt3ph"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_s74o5"]
+size = Vector3(1, 1.25, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wkce3"]
 resource_name = "Material.004"
@@ -78,11 +81,22 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_6gfii")
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_s74o5"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_1vn4p"]
+radius = 4.0
 
 [node name="Fortress" type="Area3D" groups=["fortress"]]
+collision_layer = 2
+collision_mask = 0
 script = ExtResource("1_75o7q")
 _bullet = ExtResource("2_vt3ph")
+_fire_rate = 40
+_bullet_speed = 60
+_initial_empty_area = Vector2i(5, 5)
+
+[node name="TileCollision" type="CollisionShape3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_s74o5")
 
 [node name="Tower" type="Node3D" parent="."]
 unique_name_in_owner = true
@@ -98,10 +112,19 @@ unique_name_in_owner = true
 mesh = SubResource("ArrayMesh_0kuwm")
 skeleton = NodePath("")
 
-[node name="Cannon" type="Node3D" parent="Tower/Rotator"]
+[node name="Cannon" type="Node3D" parent="Tower"]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 
-[node name="TileCollision" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1.25, 0, 0, 0, 1, 0, 0.25, 0)
-shape = SubResource("BoxShape3D_s74o5")
+[node name="PatrolArea" type="Area3D" parent="."]
+unique_name_in_owner = true
+collision_layer = 0
+collision_mask = 4
+monitoring = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PatrolArea"]
+unique_name_in_owner = true
+shape = SubResource("SphereShape3D_1vn4p")
+
+[connection signal="area_entered" from="PatrolArea" to="." method="_on_patrol_area_area_entered"]
+[connection signal="area_exited" from="PatrolArea" to="." method="_on_patrol_area_area_exited"]

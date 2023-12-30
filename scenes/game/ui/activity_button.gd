@@ -83,7 +83,6 @@ func clear_material_override(mesh_3d:MeshInstance3D):
 func _on_main_mouse_hit(tile:CollisionObject3D) -> void:
 	_draggable.visible = true
 
-
 	if tile.get_groups()[0] == "empty":
 		set_child_mesh_alphas(_draggable)
 		_draggable.global_position = tile.global_position
@@ -109,11 +108,11 @@ func _on_button_up() -> void:
 	_is_dragging = false
 	_draggable.visible = false
 
-	if _is_valid_location:
+	if _is_valid_location and EconomyManager.enough_gold(activity_cost):
 		EconomyManager.spend_gold(activity_cost)
-		var new_object:Node3D = activity_draggable.instantiate()
+		var new_object:Structure = activity_draggable.instantiate()
 		#get_viewport().add_child(new_object)
 		# add child to the GameWorld node
 		get_tree().get_root().get_node("GameWorld").add_child(new_object)
-		new_object.setup(Vector2i(floori(_last_valid_location.x), floori(_last_valid_location.z)))
+		new_object.build_at(Vector2i(floori(_last_valid_location.x), floori(_last_valid_location.z)), 10)
 		new_object.global_position = _last_valid_location

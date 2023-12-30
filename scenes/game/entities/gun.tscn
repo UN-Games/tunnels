@@ -1,7 +1,7 @@
-[gd_scene load_steps=19 format=3 uid="uid://c1hxtgptv0377"]
+[gd_scene load_steps=20 format=3 uid="uid://cu0qkevlygvdc"]
 
 [ext_resource type="Texture2D" uid="uid://c626d2uu0tap4" path="res://assets/models/tunnels/turret_colormap_tunnel.png" id="1_3nmw8"]
-[ext_resource type="Script" path="res://scenes/game/entities/turret.gd" id="1_7o0kw"]
+[ext_resource type="Script" path="res://scenes/game/entities/gun.gd" id="1_kdols"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_xvnp2"]
 size = Vector3(1, 1.75, 1)
@@ -244,8 +244,14 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_0lr8p")
 
-[node name="Turret" type="Area3D" groups=["turrets"]]
-script = ExtResource("1_7o0kw")
+[sub_resource type="SphereShape3D" id="SphereShape3D_1pwix"]
+radius = 4.0
+
+[node name="Gun" type="Area3D" groups=["turrets"]]
+collision_layer = 2
+script = ExtResource("1_kdols")
+_fire_rate = 40
+_bullet_speed = 80
 
 [node name="TileCollision" type="CollisionShape3D" parent="."]
 unique_name_in_owner = true
@@ -253,41 +259,56 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
 shape = SubResource("BoxShape3D_xvnp2")
 disabled = true
 
-[node name="TurretFixedScale" type="Node3D" parent="."]
+[node name="Tower" type="Node3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(-10, 0, -8.74228e-07, 0, 10, 0, 8.74228e-07, 0, -10, -0.05, 0, 0)
 
-[node name="Cube_001" type="MeshInstance3D" parent="TurretFixedScale"]
+[node name="Cube_001" type="MeshInstance3D" parent="Tower"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.02, 0.0466667, 3.28064e-05)
 mesh = SubResource("ArrayMesh_u2krq")
 skeleton = NodePath("")
 
-[node name="Cube_002" type="MeshInstance3D" parent="TurretFixedScale"]
+[node name="Cube_002" type="MeshInstance3D" parent="Tower"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.02, 0.0666667, 3.28064e-05)
 mesh = SubResource("ArrayMesh_x3y0v")
 skeleton = NodePath("")
 
-[node name="Cube_003" type="MeshInstance3D" parent="TurretFixedScale"]
+[node name="Cube_003" type="MeshInstance3D" parent="Tower"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.02, 0.0866667, 3.28064e-05)
 mesh = SubResource("ArrayMesh_h5fh5")
 skeleton = NodePath("")
 
-[node name="Cube_005" type="MeshInstance3D" parent="TurretFixedScale"]
+[node name="Cube_005" type="MeshInstance3D" parent="Tower"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.00166668, 0.1, 1.65558e-05)
 mesh = SubResource("ArrayMesh_mli05")
 skeleton = NodePath("")
 
-[node name="Cube_006" type="MeshInstance3D" parent="TurretFixedScale"]
+[node name="Cube_006" type="MeshInstance3D" parent="Tower"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.00334959, 0.141293, 3.92914e-05)
 mesh = SubResource("ArrayMesh_w3ao5")
 skeleton = NodePath("")
 
-[node name="Cube_013" type="MeshInstance3D" parent="TurretFixedScale"]
+[node name="Cube_013" type="MeshInstance3D" parent="Tower"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.000149047, 0.141237, 3.96729e-05)
 mesh = SubResource("ArrayMesh_l477r")
 skeleton = NodePath("")
 
-[node name="Cube_017" type="MeshInstance3D" parent="TurretFixedScale"]
+[node name="Cube_017" type="MeshInstance3D" parent="Tower"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 mesh = SubResource("ArrayMesh_7rt3n")
 skeleton = NodePath("")
+
+[node name="Cannon" type="Node3D" parent="Tower"]
+unique_name_in_owner = true
+
+[node name="PatrolArea" type="Area3D" parent="."]
+unique_name_in_owner = true
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PatrolArea"]
+unique_name_in_owner = true
+shape = SubResource("SphereShape3D_1pwix")
+
+[connection signal="area_entered" from="PatrolArea" to="." method="_on_patrol_area_area_entered"]
+[connection signal="area_exited" from="PatrolArea" to="." method="_on_patrol_area_area_exited"]

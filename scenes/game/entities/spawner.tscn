@@ -166,6 +166,8 @@ size = Vector3(1, 0.2, 1)
 
 [node name="Spawner" type="Area3D" groups=["spawner"]]
 unique_name_in_owner = true
+collision_layer = 2
+collision_mask = 0
 script = ExtResource("1_8o8d1")
 enemy = ExtResource("2_h5qh6")
 
