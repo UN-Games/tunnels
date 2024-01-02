@@ -1,7 +1,8 @@
-[gd_scene load_steps=24 format=3 uid="uid://cu0qkevlygvdc"]
+[gd_scene load_steps=25 format=3 uid="uid://cu0qkevlygvdc"]
 
 [ext_resource type="Texture2D" uid="uid://c626d2uu0tap4" path="res://assets/models/tunnels/turret_colormap_tunnel.png" id="1_3nmw8"]
 [ext_resource type="Script" path="res://scenes/game/entities/gun.gd" id="1_kdols"]
+[ext_resource type="PackedScene" uid="uid://di1t7gkxk1vcj" path="res://scenes/game/entities/bullet.tscn" id="2_6khqp"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/state_chart.gd" id="3_ghmcg"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/compound_state.gd" id="4_bfxtn"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/atomic_state.gd" id="5_bl1lb"]
@@ -254,8 +255,8 @@ radius = 4.0
 [node name="Gun" type="Area3D" groups=["turrets"]]
 collision_layer = 2
 script = ExtResource("1_kdols")
+projectile_type = ExtResource("2_6khqp")
 _fire_rate = 40
-_bullet_speed = 80
 
 [node name="TileCollision" type="CollisionShape3D" parent="."]
 unique_name_in_owner = true
@@ -307,6 +308,7 @@ skeleton = NodePath("")
 
 [node name="Cannon" type="Node3D" parent="Tower"]
 unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.01, 1.4, -0.523)
 
 [node name="PatrolArea" type="Area3D" parent="."]
 unique_name_in_owner = true

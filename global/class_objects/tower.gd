@@ -1,12 +1,10 @@
 extends Structure
 class_name Tower
 
-@export var _bullet: PackedScene = null
+@export var projectile_type: PackedScene = null
 
-@export_range(1,100) var _damage: int = 1
 @export_range(1, 10) var _max_range: int = 4
 @export_range(1,100) var _fire_rate: int = 10
-@export_range(1, 100) var _bullet_speed = 10
 @export var _initial_empty_area: Vector2i = Vector2i(1, 1)
 
 @onready var _tower: Node3D = %Tower
@@ -17,23 +15,12 @@ class_name Tower
 @onready var _state_chart: StateChart = %StateChart
 
 var _current_enemy:Node3D = null
-var _time = 0
-var _can_fire = true
+var _last_fire_time: int = 0
 var _enemies_in_range:Array[Node3D] = []
-var _current_enemy_targetted:bool = false
 var _acquire_slerp_progress:float = 0
 
 func _process(delta: float) -> void:
 	pass
-
-		#aim_at_target()
-		#if _can_fire:
-			#_fire()
-		#	return
-		#_time += delta
-		#if _time >= _fire_rate:
-		#	_time = 0
-		#	_can_fire = true
 
 func build_at(pos: Vector2i, life: int, offset: Vector2 = Vector2.ZERO)	-> void:
 	super(pos, life, offset)
@@ -51,24 +38,15 @@ func aim_at_target() -> void:
 		# lock rotation on the Y axis
 		pass
 
-
 func _rotate_towards_target(rtarget, delta):
 	var target_vector = _tower.global_position.direction_to(Vector3(rtarget.global_position.x, _tower.global_position.y, rtarget.global_position.z))
 	var target_basis:Basis = Basis.looking_at(target_vector, Vector3.UP)
+	# print the comparation between the current basis and the target basis on the X and Y axis
 	_tower.basis = _tower.basis.slerp(target_basis, _acquire_slerp_progress)
-	_acquire_slerp_progress += delta
-
-	if _acquire_slerp_progress > 1:
+	_acquire_slerp_progress += delta * 0.1
+	# check if the progress is over 1 or the tower basis is close enough to the target basis
+	if _acquire_slerp_progress > 1 or _tower.basis.tdotx(target_basis.x) > 0.99 or _tower.basis.tdoty(target_basis.y) > 0.99:
 		_state_chart.send_event("to_attacking")
-
-func _fire() -> void:
-	_can_fire = false
-	var bullet = _bullet.instance()
-	bullet.global_transform.origin = _cannon.global_transform.origin
-	bullet.global_transform.basis = _cannon.global_transform.basis
-	bullet.damage = _damage
-	bullet.speed = _bullet_speed
-	get_tree().root.add_child(bullet)
 
 func _find_nearest_enemy():
 	var nearest_enemy = null
@@ -99,7 +77,6 @@ func _on_patrolling_state_processing(delta:float) -> void:
 		_state_chart.send_event("to_acquiring")
 
 func _on_acquiring_state_entered() -> void:
-	_current_enemy_targetted = false
 	_acquire_slerp_progress = 0
 
 func _on_acquiring_state_physics_processing(delta:float) -> void:
@@ -109,10 +86,21 @@ func _on_acquiring_state_physics_processing(delta:float) -> void:
 		_state_chart.send_event("to_patrolling")
 
 func _on_attacking_state_entered() -> void:
-	_current_enemy_targetted = true
+	_last_fire_time = 0
 
 func _on_attacking_state_physics_processing(delta:float) -> void:
-	if _current_enemy != null and _enemies_in_range.has(_current_enemy) == false:
+	if _current_enemy != null and _enemies_in_range.has(_current_enemy):
 		_tower.look_at(Vector3(_current_enemy.global_position.x, _tower.global_position.y, _current_enemy.global_position.z), Vector3.UP)
+		_maybe_fire()
 	else:
 		_state_chart.send_event("to_patrolling")
+
+func _maybe_fire() -> void:
+	if Time.get_ticks_msec() > _last_fire_time + floori((10000 / _fire_rate)):
+		var projectile:Projectile = projectile_type.instantiate()
+		# set rotation to the tower's rotation
+		projectile.global_transform.basis = _tower.global_transform.basis
+		projectile.starting_position = _cannon.global_position
+		projectile.target = _current_enemy
+		get_tree().root.add_child(projectile)
+		_last_fire_time = Time.get_ticks_msec()

@@ -1,11 +1,18 @@
-[gd_scene load_steps=49 format=3 uid="uid://bvxb2ywxjdbny"]
+[gd_scene load_steps=51 format=3 uid="uid://bvxb2ywxjdbny"]
 
 [ext_resource type="Texture2D" uid="uid://bcar74y731k04" path="res://assets/models/kenney/Textures/colormap.png" id="1_qu2eq"]
 [ext_resource type="Script" path="res://scenes/game/characters/enemy.gd" id="1_vttip"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/state_chart.gd" id="2_53gkb"]
+[ext_resource type="Script" path="res://scenes/game/resources/enemy_settings.gd" id="2_p2mhk"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/compound_state.gd" id="3_a111j"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/atomic_state.gd" id="4_px3kx"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/transition.gd" id="5_jc3pd"]
+
+[sub_resource type="Resource" id="Resource_olimw"]
+script = ExtResource("2_p2mhk")
+speed = 15
+damage = 10
+health = 100
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ek6bk"]
 resource_name = "colormap"
@@ -2341,6 +2348,7 @@ _data = {
 [node name="Character" type="Node3D"]
 unique_name_in_owner = true
 script = ExtResource("1_vttip")
+enemy_settings = SubResource("Resource_olimw")
 
 [node name="StateChart" type="Node" parent="."]
 unique_name_in_owner = true
@@ -2398,7 +2406,7 @@ tilt_enabled = false
 unique_name_in_owner = true
 transform = Transform3D(-1, 0, -2.53518e-06, 0, 1, 0, 2.53518e-06, 0, -1, 0, 0.5, 0)
 collision_layer = 4
-collision_mask = 2
+collision_mask = 8
 
 [node name="character-orc" type="Node3D" parent="Path3D/PathFollow3D/Character"]
 
@@ -2449,3 +2457,4 @@ libraries = {
 [connection signal="state_processing" from="StateChart/CompoundState/Travelling" to="." method="_on_travelling_state_processing"]
 [connection signal="state_entered" from="StateChart/CompoundState/Attacking" to="." method="_on_attacking_state_entered"]
 [connection signal="state_entered" from="StateChart/CompoundState/Despawning" to="." method="_on_despawning_state_entered"]
+[connection signal="area_entered" from="Path3D/PathFollow3D/Character" to="." method="_on_character_area_entered"]

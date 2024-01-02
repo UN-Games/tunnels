@@ -1,13 +1,17 @@
 extends Node3D
 class_name Enemy
 
+@export var enemy_settings: EnemySettings
+
 @onready var _character: Area3D = %Path3D/PathFollow3D/Character
 @onready var _path_3d: Path3D = %Path3D
 @onready var _path_follow_3d: PathFollow3D = %Path3D/PathFollow3D
 @onready var _anim_player: AnimationPlayer = %Path3D/PathFollow3D/Character/AnimPlayer
 @onready var _state_chart: StateChart = %StateChart
 
-@export var _speed:int = 2
+var enemy_health: int
+
+var _attackable: bool = false
 
 var astar_grid: AStarGrid2D = null
 var _enemy_progress: float = 0
@@ -15,7 +19,7 @@ var _start: Vector2i = Vector2i(0, 0)
 var _target: Vector2i = Vector2i(0, 0)
 
 func _ready() -> void:
-	#_character.hide()
+	enemy_health = enemy_settings.health
 	pass
 
 func setup(start: Vector2i, target: Vector2i) -> void:
@@ -77,15 +81,18 @@ func set_astar_grid() -> void:
 
 func _on_spawning_state_entered() -> void:
 	#add_to_group("enemies")
+	_attackable = false
 	_anim_player.play("spawn")
 
 func _on_travelling_state_entered() -> void:
 	# play the sprint animation with blend of 1 seg and loop animation
+	_attackable = true
+	_path_follow_3d.progress = 0
 	_anim_player.play("sprint")
 
 func _on_travelling_state_processing(delta: float) -> void:
 	_character.position = Vector3( 0, 0.5, 0)
-	_enemy_progress += delta * _speed
+	_enemy_progress += delta * enemy_settings.speed * 0.1
 	_path_follow_3d.progress = _enemy_progress
 
 	if _enemy_progress >= _path_3d.curve.get_baked_length():
@@ -105,3 +112,10 @@ func _on_despawning_state_entered() -> void:
 	_anim_player.play("despawn")
 	await _anim_player.animation_finished
 	queue_free()
+
+func _on_character_area_entered(area:Area3D) -> void:
+	if area is Projectile:
+		enemy_health -= area.projectile_settings.damage
+
+	if enemy_health <= 0:
+		queue_free()

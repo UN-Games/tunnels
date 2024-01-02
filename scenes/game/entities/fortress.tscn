@@ -92,9 +92,8 @@ radius = 4.0
 collision_layer = 2
 collision_mask = 0
 script = ExtResource("1_75o7q")
-_bullet = ExtResource("2_vt3ph")
-_fire_rate = 40
-_bullet_speed = 60
+projectile_type = ExtResource("2_vt3ph")
+_fire_rate = 25
 _initial_empty_area = Vector2i(5, 5)
 
 [node name="TileCollision" type="CollisionShape3D" parent="."]
