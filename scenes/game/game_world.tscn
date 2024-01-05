@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://ckfoiymgajttt"]
+[gd_scene load_steps=15 format=3 uid="uid://ckfoiymgajttt"]
 
 [ext_resource type="Script" path="res://scenes/game/game_world.gd" id="1_78whg"]
 [ext_resource type="MeshLibrary" uid="uid://wrjlopkwmtv4" path="res://assets/generate_path.tres" id="2_833ox"]
@@ -14,6 +14,9 @@
 [ext_resource type="PackedScene" uid="uid://cu0qkevlygvdc" path="res://scenes/game/entities/gun.tscn" id="12_p4y2u"]
 [ext_resource type="Material" uid="uid://clupeys1hy1ka" path="res://assets/materials/red_transparent.material" id="13_vl8pe"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wnwgn"]
+albedo_color = Color(0, 1, 0.207843, 1)
+
 [node name="GameWorld" type="Node3D"]
 script = ExtResource("1_78whg")
 _coins = 100
@@ -25,36 +28,45 @@ _tools = Array[PackedScene]([ExtResource("6_m5dhy"), ExtResource("7_fccgl")])
 
 [node name="RTSCamera" type="Node3D" parent="."]
 unique_name_in_owner = true
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 0, 0)
 script = ExtResource("2_ubci8")
-min_zoom = 50
-max_zoom = 200
+min_zoom = 25
+max_zoom = 100
 zoom_speed = 5.0
 zoom_speed_damp = 0.8
 zoom_to_cursor = true
 
 [node name="Elevation" type="Node3D" parent="RTSCamera"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 0.258819, 0.965925, 0, -0.965925, 0.258819, 0, 3, 0)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 0.999999, 0, -0.999999, -4.37114e-08, 0, 1, 0)
 
 [node name="Camera3D" type="Camera3D" parent="RTSCamera/Elevation"]
 unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, -2.98023e-08, 0, 2.98023e-08, 1, 0, 0, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 current = true
 fov = 10.0
 size = 8.017
 far = 5000.0
 
-[node name="SpotLight3D" type="SpotLight3D" parent="RTSCamera/Elevation"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
-light_color = Color(0.752, 0.8, 0.64, 1)
-light_energy = 3.0
-spot_range = 75.0
-spot_angle = 75.0
+[node name="SpotLight3D" type="SpotLight3D" parent="RTSCamera/Elevation/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.10543e-15, 4)
+light_color = Color(0.882353, 0.764706, 0.443137, 1)
+light_energy = 5.0
+spot_range = 100.0
+
+[node name="Target" type="Node3D" parent="RTSCamera"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 0.999999, 0, 0, 0, 0.999999, 0, 0, 0)
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="RTSCamera/Target"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+radius = 0.1
+material = SubResource("StandardMaterial3D_wnwgn")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 1, 0)
 light_color = Color(0.746667, 0.8, 0.72, 1)
-light_energy = 0.01
+light_energy = 0.1
 
 [node name="Control" type="Control" parent="."]
 unique_name_in_owner = true

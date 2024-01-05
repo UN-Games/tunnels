@@ -1,16 +1,18 @@
 extends Node3D
 class_name  RTSCamera
 
+@onready var elevation: Node3D = %Elevation
 @onready var camera: Camera3D = %Elevation/Camera3D
+@onready var target: Node3D = %Target
 @onready var viewport_width: int = get_viewport().get_size().x
 @onready var viewport_height: int = get_viewport().get_size().y
 @onready var viewport_min_x_move: int = viewport_width
 @onready var viewport_min_y_move: int = viewport_height
 # export the pan speed with a slider from 0 to 10 by 0.5 increments
-@export_range(0, 10, 0.1) var pan_speed: float = 0.2
+@export_range(0, 10, 1) var pan_speed: int = 1
 @export var allow_pan: bool = true
 # movement
-@export_range(0, 100, 1) var move_speed: float = 5.0
+@export_range(0, 10, 1) var move_speed: int = 1
 # zoom
 @export_range(0, 1000) var min_zoom: int = 1
 @export_range(0, 1000) var max_zoom: int = 90
@@ -42,6 +44,8 @@ const RAY_LENGTH = 1000
 func _ready() -> void:
 	Events.connect("camera_freeze_requested", _freeze)
 	Events.connect("camera_unfreeze_requested", _unfreeze)
+	# set the elevation z position to the min zoom of the camera
+	target.position.z = -min_zoom
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -114,13 +118,29 @@ func _move(delta: float) -> void:
 	if Input.is_action_pressed("right"):
 		velocity += transform.basis.x
 	velocity = velocity.normalized()
-	_translate_location(velocity * move_speed * delta * ((max_zoom +150 - camera.position.z) * 0.005))
+	velocity *= move_speed * delta * (max_zoom + min_zoom - (camera.position.z * 0.1)) * 0.1
+	_translate_location(velocity)
 
 func _pan(delta: float) -> void:
 	if not _is_panning or not allow_pan:
 		return
 	var displacement = _get_mouse_displacement()
-	var velocity = Vector3(displacement.x, 0, displacement.y) * pan_speed * delta * ((camera.position.z +10) * 0.1)
+	var velocity = Vector3()
+	# translate based on the transform basis
+	if displacement.x < 0:
+		velocity -= transform.basis.x
+	if displacement.x > 0:
+		velocity += transform.basis.x
+	if displacement.y < 0:
+		velocity -= transform.basis.z
+	if displacement.y > 0:
+		velocity += transform.basis.z
+	# normalize the velocity
+	velocity = velocity.normalized()
+	# multiply the velocity by the pan speed and delta
+	velocity *= pan_speed * delta * (max_zoom + min_zoom - (camera.position.z * 0.1)) * 0.1
+
+	#var velocity = Vector3(displacement.x, 0, displacement.y) * pan_speed * delta * ((camera.position.z +10) * 0.1)
 	_translate_location(-velocity)
 
 func _zoom(delta: float) -> void:
@@ -134,6 +154,8 @@ func _zoom(delta: float) -> void:
 	var pointing_at = _get_ground_click_location()
 	# zoom, change local position
 	camera.position.z = new_zoom
+	# look at the target
+	camera.look_at(target.global_position, Vector3.UP)
 
 	if zoom_to_cursor and pointing_at != null:
 		_realign_camera(pointing_at)
@@ -179,11 +201,7 @@ func _realign_camera(location: Vector3) -> void:
 	if _last_zoomed_in_pos.y > viewport_height * 0.5 and _last_zoomed_out_pos.y < _last_zoomed_in_pos.y and _zooming_out:
 		displacement.z *= 0.95
 
-	# multiply with lower values when the displacement is bigger math.pow(0.95, displacement.x) only displacements bigger than 1
-	if abs(displacement.x) > 1:
-		displacement.x *= pow(0.95, abs(displacement.x))
-	if abs(displacement.z) > 1:
-		displacement.z *= pow(0.95, abs(displacement.z))
+
 
 	_translate_location(-displacement)
 
